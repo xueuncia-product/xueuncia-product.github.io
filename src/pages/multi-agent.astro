@@ -10,10 +10,19 @@ const models = {
 };
 const names: Record<string, string> = { claude: 'Claude Code', codex: 'Codex / OpenAI', deepseek: 'DeepSeek Harness', kimi: 'Kimi Code', workbuddy: 'WorkBuddy' };
 ---
-<Base title="多 Agent 协作" description="飞书入口、一个主 Agent 与四个执行分支，动态展示任务派发、并行工作和结果回传。" active="works">
-  <header class="section-heading"><small>Working together</small><h1>多 Agent 协作架构</h1><p>消息进入，任务拆开，四个分支独立推进；结果沿回传路径汇集，再由主 Agent 复核成一份交付。</p></header>
+<Base title="多 Agent 协作" description="飞书入口、一个主 Agent 与四个执行分支，动态展示任务派发、并行工作和结果回传。" active="works" showVerse={false}>
+  <header class="agent-demo-heading">
+    <div><small>一个主 Agent · 四个执行分支</small><h1>多 Agent 协作架构</h1></div>
+    <div class="theme-intro">
+      <p class="intro-sky"><strong>目标清楚，分工才能并行。</strong><span>任务从飞书进入，拆分后各自推进，回到主 Agent 统一复核。</span></p>
+      <p class="intro-cosmos"><strong>分头探索，汇成一份交付。</strong><span>四个分支独立思考，由一个主 Agent 协调、核验与收束。</span></p>
+      <p class="intro-ink"><strong>各尽其长，归于一处。</strong><span>任务有边界，回传有依据，交付由主 Agent 复核。</span></p>
+    </div>
+  </header>
   <MultiAgentFlow models={models} />
-  <article class="prose model-guide" id="models">
+  <details class="model-guide" id="models">
+    <summary>查看型号、来源与协作方法 <span>核验于 2026-10-10</span></summary>
+    <article class="prose">
     <h2>模型与工具，分别选择</h2>
     <p>型号核验于 <time datetime="2026-10-10">2026 年 10 月 10 日</time>，以官方当前目录和更新记录为依据。图中展示协作结构与候选接入路线，实际可用性由工具、账号和接口配置决定。</p>
     <div class="model-table"><table>
@@ -24,11 +33,27 @@ const names: Record<string, string> = { claude: 'Claude Code', codex: 'Codex / O
     <h2>任务交得出去，结果也要接得回来</h2>
     <p>每个分支收到目标、材料、职责边界和验收条件。回传时留下结论、来源、改动和未决项，再由一个负责人统一复核。跨工具协作通过明确的交接接口组织，不能把模型协议兼容当成原生子 Agent 已经互通。</p>
     <p><a href="/p/multi-agent-collaboration/">读协作方法：先分清事实和责任 →</a></p>
-  </article>
+    </article>
+  </details>
 </Base>
 
 <style>
-  .model-guide { margin-top: 64px; }
+  :global(body:has(.agent-demo-heading) .wrap) { max-width: 1200px; }
+  :global(body:has(.agent-demo-heading) main.wrap) { background: none; }
+  .agent-demo-heading { display: flex; justify-content: space-between; align-items: center; gap: 32px; margin: 10px 0 18px; }
+  .agent-demo-heading small { color: var(--mute); font-size: 12px; }
+  .agent-demo-heading h1 { margin: 6px 0 0; font-size: 30px; line-height: 1.35; font-weight: 600; }
+  .theme-intro { max-width: 530px; }
+  .theme-intro p { margin: 0; font-size: 13px; line-height: 1.7; color: var(--mute); }
+  .theme-intro strong { display: block; font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+  .intro-cosmos, .intro-ink { display: none; }
+  :global(html.cosmos) .intro-sky, :global(html.ink) .intro-sky { display: none; }
+  :global(html.cosmos) .intro-cosmos, :global(html.ink) .intro-ink { display: block; }
+  .model-guide { margin-top: 12px; border-top: 1px solid var(--line); }
+  .model-guide > summary { cursor: pointer; padding: 15px 0; color: var(--mute); font-size: 13px; }
+  .model-guide > summary span { margin-left: 14px; font: 11px var(--mono); }
+  .model-guide > summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+  .model-guide article { padding-top: 8px; }
   .model-table { overflow-x: auto; margin: 24px 0; }
   table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.8; }
   th, td { text-align: left; vertical-align: top; padding: 14px 12px; border-bottom: 1px solid var(--line); }
@@ -37,4 +62,11 @@ const names: Record<string, string> = { claude: 'Claude Code', codex: 'Codex / O
   td code { display: block; margin-top: 5px; font-size: 12px; }
   .alternate { display: block; color: var(--mute); font-size: 13px; margin-top: 4px; }
   .model-footnote { font-size: 14px; color: var(--mute); }
+  @media (min-width: 1000px) { :global(body:has(.agent-demo-heading) .nav) { padding-top: 18px; padding-bottom: 18px; } }
+  @media (max-width: 840px) {
+    .agent-demo-heading { display: block; margin: 8px 0 20px; }
+    .agent-demo-heading h1 { font-size: 28px; }
+    .theme-intro { margin-top: 12px; }
+    .theme-intro strong { font-size: 16px; }
+  }
 </style>
