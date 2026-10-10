@@ -37,6 +37,7 @@ body .reading-layout { display: grid; grid-template-columns: 170px minmax(0, 1fr
 body .reading-layout .prose { min-width: 0; width: 100%; max-width: 780px; margin: 0; font: 17px/1.95 var(--body-font); letter-spacing: .01em; }
 body .reading-context, body .reading-aside { min-width: 0; font-family: var(--ui-font); }
 body .reading-context-sticky, body .reading-aside-sticky { position: sticky; top: 122px; }
+body .reading-aside-sticky:has(.article-toc a:nth-of-type(9)) { position: static; }
 body .reading-context small, body .article-toc small, body .related-reading small { display: block; font: 10px/1.7 var(--ui-font); letter-spacing: .14em; color: var(--mute); margin-bottom: 14px; }
 body .reading-context h2 { font: 500 21px/1.5 var(--display-font); margin: 0 0 12px; }
 body .reading-context p { font: 12px/1.9 var(--body-font); color: var(--mute); margin: 0 0 22px; }
