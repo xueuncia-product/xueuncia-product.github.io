@@ -1,27 +1,28 @@
 ---
 import Base from '../layouts/Base.astro';
 import MultiAgentFlow from '../components/MultiAgentFlow.astro';
+const models = {
+  claude: { primary: 'Claude Opus 5.5', secondary: 'Fable 5.1 · 复杂任务', caption: '主 Agent · 计划与复核', description: 'Opus 5.5 负责常规统筹；Fable 5.1 是复杂推理与长时任务的升级选项。同一工具内的原生子 Agent，与跨工具交接分别处理。', source: 'https://code.claude.com/docs/en/model-config', id: 'claude-opus-5-5', capability: '文本与图像输入', note: '默认型号会受提供商和组织配置影响。' },
+  codex: { primary: 'GPT-6.1 Sol', secondary: '', caption: 'Codex · 独立实现与检查', description: '把明确的任务包交给 Codex，完成实现、工具操作与验证，再返回可复核的产物。GPT-6.1 Sol 是当前 Sol 系列的新版本。', source: 'https://developers.openai.com/api/docs/models/gpt-6.1-sol', id: 'gpt-6.1-sol', capability: '文本与图像输入', note: '复杂任务也可按评测选择 GPT-6 Astra；不是仅凭版本号决定分工。' },
+  deepseek: { primary: 'DeepSeek V4.1-Flash', secondary: 'V4-Pro-0813 · 备选', caption: '官方 Harness · 开发者预览', description: 'V4.1-Flash 是当前最新公开发布型号，支持图像输入和 Agent 任务；V4-Pro-0813 仍提供文本推理。DeepSeek Harness 已由官方开源，处于开发者预览阶段。', source: 'https://api-docs.deepseek.com/quick_start/pricing', id: 'deepseek-flash', capability: 'V4.1-Flash 支持文本与图像', note: 'Pro 仍可用，但不是最新发布型号，也不支持原生视觉。' },
+  kimi: { primary: 'K2.8 Preview', secondary: 'K3 · 旗舰选项', caption: 'Kimi Code · 桌面与 CLI', description: 'Kimi Code 的 kimi-for-coding 已升级到 K2.8 Preview。K3 仍是旗舰选项；最新发布、旗舰和账号实际选择是不同概念。', source: 'https://www.kimi.com/code/docs/kimi-code/models.html', id: 'kimi-for-coding', capability: '文本、图像与视频输入', note: 'K3 的 ID 是 k3；权限及部分模态受套餐和具体型号影响。' },
+  workbuddy: { primary: 'GLM-5.3 · 主模型', secondary: 'GPT-6.1 Sol · 视觉候选', caption: 'WorkBuddy · 按配置选择模型', description: '官方内置列表可确认 GLM-5.3，也支持自定义兼容接口。GPT-6.1 Sol 作为外部视觉候选展示；固定双模型配对及自动视觉路由尚未核验。', source: 'https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model', id: 'glm-5.3', capability: 'GLM-5.3 是文本旗舰', note: '原厂原生多模态选项为 GLM-5.3-Flash / FlashX；客户端支持与原厂模态须分别核对。' },
+};
+const names: Record<string, string> = { claude: 'Claude Code', codex: 'Codex / OpenAI', deepseek: 'DeepSeek Harness', kimi: 'Kimi Code', workbuddy: 'WorkBuddy' };
 ---
-<Base title="多 Agent 协作" description="从任务拆分、并行工作到复核归并的互动流程演示。" active="works">
-  <header class="section-heading"><small>Working together</small><h1>多 Agent 协作</h1><p>把问题拆清楚，让不同角色并行推进，再把结果复核成一份可交付的答案。</p></header>
-  <MultiAgentFlow />
+<Base title="多 Agent 协作" description="飞书入口、一个主 Agent 与四个执行分支，动态展示任务派发、并行工作和结果回传。" active="works">
+  <header class="section-heading"><small>Working together</small><h1>多 Agent 协作架构</h1><p>消息进入，任务拆开，四个分支独立推进；结果沿回传路径汇集，再由主 Agent 复核成一份交付。</p></header>
+  <MultiAgentFlow models={models} />
   <article class="prose model-guide" id="models">
-    <h2>角色与模型，分开维护</h2>
-    <p>一个主 Agent 负责目标、分工与归并，同一工具内的子 Agent 分别研究、实现和复核。需要其他产品时，另用明确的交接接口；跨工具自动调度需要单独实现，不能把协议兼容当成已经连通。</p>
-    <p>这里是流程演示，下面是截至 <time datetime="2026-10-10">2026 年 10 月 10 日</time>可由官方资料确认的模型候选。它们不代表这个网页在运行模型，也不代表某个账号已启用全部型号。</p>
+    <h2>模型与工具，分别选择</h2>
+    <p>型号核验于 <time datetime="2026-10-10">2026 年 10 月 10 日</time>，以官方当前目录和更新记录为依据。图中展示协作结构与候选接入路线，实际可用性由工具、账号和接口配置决定。</p>
     <div class="model-table"><table>
-      <thead><tr><th>工具／模型</th><th>当前可确认名称</th><th>能力与边界</th></tr></thead>
-      <tbody>
-        <tr><td>Codex / OpenAI</td><td>GPT-6.1 Sol<br /><code>gpt-6.1-sol</code></td><td>支持图像输入；同一 Codex 工具内可委派子 Agent。<a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol">模型</a> · <a href="https://learn.chatgpt.com/docs/agent-configuration/subagents">子 Agent</a></td></tr>
-        <tr><td>Claude Code</td><td>Claude Opus 5.5 / Fable 5.1</td><td>模型与 Claude Code 产品分开看；原生子 Agent 与实验性 Agent Teams 也是两种机制。<a href="https://platform.claude.com/docs/en/models/overview">模型目录</a> · <a href="https://code.claude.com/docs/en/sub-agents">子 Agent</a></td></tr>
-        <tr><td>Kimi</td><td>Kimi K3<br /><code>kimi-k3</code></td><td>模型支持视觉；Kimi Code 的原生 Agent 机制不等于模型 API 自动调度其他工具。<a href="https://platform.kimi.ai/docs/guide/kimi-k3-quickstart">模型</a> · <a href="https://www.kimi.com/code/docs/en/kimi-code-cli/customization/agents.html">Agent</a></td></tr>
-        <tr><td>DeepSeek</td><td>DeepSeek V4 Pro</td><td>文本推理与代码模型，不标成视觉模型。<a href="https://api-docs.deepseek.com/quick_start/pricing/">官方能力表</a></td></tr>
-        <tr><td>GLM</td><td>GLM-5.3</td><td>文本输入；GLM-5.3-FLASH 是另一款多模态模型，两者能力不能混写。<a href="https://docs.z.ai/guides/llm/glm-5.3">模型页</a></td></tr>
-        <tr><td>WorkBuddy</td><td>按产品实际配置选择</td><td>可确认多任务与模型配置；历史截图中的固定模型组合未核实。<a href="https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model">模型配置</a></td></tr>
-      </tbody>
+      <thead><tr><th>工具</th><th>当前型号</th><th>能力与选用说明</th></tr></thead>
+      <tbody>{Object.entries(models).map(([key, model]) => <tr><td>{names[key]}</td><td><strong>{model.primary}</strong>{model.secondary && <span class="alternate">{model.secondary}</span>}<code>{model.id}</code></td><td>{model.capability}。{model.note}<br /><a href={model.source}>官方型号与配置 →</a></td></tr>)}</tbody>
     </table></div>
-    <h2>并行之后，要能接回来</h2>
-    <p>每份交付留下结论、来源、完成条件和未决项。最终结果由一个负责人归并；其他 Agent 可以提供独立审查，避免每个分支维护不同的事实。</p>
+    <p class="model-footnote">GLM-5.3 的原生多模态版本须区分 <a href="https://docs.bigmodel.cn/cn/guide/models/vlm/glm-5.3-flash">GLM-5.3-Flash / FlashX</a>；DeepSeek Harness 的预览状态见<a href="https://github.com/deepseek-ai/deepseek-harness">官方仓库</a>。模型能力不能直接当作客户端已接通的功能。</p>
+    <h2>任务交得出去，结果也要接得回来</h2>
+    <p>每个分支收到目标、材料、职责边界和验收条件。回传时留下结论、来源、改动和未决项，再由一个负责人统一复核。跨工具协作通过明确的交接接口组织，不能把模型协议兼容当成原生子 Agent 已经互通。</p>
     <p><a href="/p/multi-agent-collaboration/">读协作方法：先分清事实和责任 →</a></p>
   </article>
 </Base>
@@ -33,5 +34,7 @@ import MultiAgentFlow from '../components/MultiAgentFlow.astro';
   th, td { text-align: left; vertical-align: top; padding: 14px 12px; border-bottom: 1px solid var(--line); }
   th { color: var(--mute); font-weight: 500; white-space: nowrap; }
   td:first-child { white-space: nowrap; }
-  td code { font-size: 12px; }
+  td code { display: block; margin-top: 5px; font-size: 12px; }
+  .alternate { display: block; color: var(--mute); font-size: 13px; margin-top: 4px; }
+  .model-footnote { font-size: 14px; color: var(--mute); }
 </style>
