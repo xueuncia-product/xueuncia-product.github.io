@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>雪豹 Uncia</title>
+<link rel="stylesheet" href="/fonts/fonts.css" />
+<style>
+  :root {
+    --paper: #fdfbf6; --ink: #1c1f26; --mute: #6b6f78; --line: #ece6da; --blue: #1d4ea0; --chip: #fff;
+    --serif: "Newsreader", "LXGW WenKai Screen", "Songti SC", serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --w: 100vw; --x: 0px; --y: 0px; --H: calc(var(--w) * .46);
+  }
+  body.night, body.cosmos { --paper: #0d1220; --ink: #e8ebf2; --mute: #8d95a8; --line: #222a3d; --blue: #8fb4ff; --chip: #151c2e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); transition: background .6s, color .6s; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- 天空首屏 ---------- */
+  .hero { position: relative; height: calc(var(--H) + var(--y)); min-height: 520px; overflow: hidden; }
+  #sky { position: absolute; inset: 0; transition: background 1.2s; }
+  #stars { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s; }
+  body.night #stars { opacity: 1; }
+  .orb { position: absolute; width: 90px; height: 90px; border-radius: 50%; transform: translate(-50%, -50%); transition: all 1.2s; }
+  .orb.sun { background: radial-gradient(circle, #fffbe9 0 30%, #fff0b8 42%, rgba(255,232,160,.55) 52%, rgba(255,230,170,0) 72%);
+             box-shadow: 0 0 140px 80px rgba(255,238,190,.38); filter: blur(1.5px); }
+  .orb.moon { width: 46px; height: 46px; background: radial-gradient(circle at 38% 36%, #fffdf2, #e4e2d6 60%, #c9c8bf);
+              box-shadow: 0 0 60px 18px rgba(220,230,255,.25); }
+  .layer { position: absolute; pointer-events: none; transition: filter 1.2s; will-change: transform; }
+  .far  { width: calc(var(--w) * .9);  right: calc(var(--w) * -.12); top: calc(var(--y) + var(--w) * -.10); opacity: .55; filter: blur(2px); transform: scaleX(-1); }
+  .back { width: calc(var(--w) * 1.2); left: calc(var(--x) + var(--w) * -.18); top: calc(var(--y) + var(--w) * -.01); opacity: .92; filter: blur(.6px); }
+  .far, .back { -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+  .front { width: var(--w); height: calc(var(--w) / 1.5); left: var(--x); top: calc(var(--y) + var(--w) * .052); }
+  .front img.cl { position: absolute; inset: 0; width: 100%; }
+  .drift-a { animation: drift 46s ease-in-out infinite alternate; }
+  .drift-b { animation: drift 70s ease-in-out infinite alternate-reverse; }
+  @keyframes drift { to { translate: calc(var(--w) * -.035) 0; } }
+  .leo { position: absolute; width: 22%; left: 67%; top: 10%; pointer-events: auto; cursor: pointer; transform-origin: 50% 95%; animation: breathe 2.6s ease-in-out infinite; }
+  /* 雪豹演员：两张图交叉淡入 + 3D 跟随鼠标 + 随机动作 */
+  .actor { perspective: 900px; }
+  .rig { position: relative; aspect-ratio: 1; transition: transform 1.4s cubic-bezier(.25,.6,.3,1); }
+  .rig img { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; transition: opacity .35s; filter: drop-shadow(0 14px 14px rgba(90,100,120,.14)); }
+  .rig img.on { opacity: 1; }
+  .rig img { transition: opacity 1.15s ease-in-out; }
+  .actor::before { content: ''; position: absolute; z-index: -1; left: 22%; bottom: .5%; width: 62%; height: 7%; border-radius: 50%; background: rgba(27,38,54,.23); filter: blur(8px); transition: width 1.2s, left 1.2s; }
+  .actor[data-pose=leo_lie]::before { left: 9%; width: 82%; }
+  .actor.down .rig { animation: down .8s ease-out; }       /* 趴下：重心下沉 */
+  .actor.up .rig { animation: up .7s ease-out; }           /* 起身：先压后起 */
+  .actor.spring .rig { animation: spring .5s cubic-bezier(.2,.8,.3,1); }  /* 扑：先蹲后冲 */
+  @keyframes down { from { translate: 0 -3%; } to { translate: 0 0; } }
+  @keyframes up { 35% { scale: 1.02 .97; translate: 0 1%; } }
+  @keyframes spring { 30% { scale: 1.03 .94; translate: -2% 2%; } 65% { translate: 3% -2%; } }
+  .actor[data-pose=leo_lie], .actor[data-pose=leo_laptop] { animation-duration: 3.6s; }
+  body.night .rig img { filter: brightness(.8) saturate(.9) drop-shadow(0 18px 18px rgba(0,0,0,.3)); }
+  .glow { position: absolute; left: 4%; top: 30%; width: 34%; height: 34%; border-radius: 50%; background: radial-gradient(rgba(170,220,255,.55), transparent 65%); opacity: 0; transition: opacity 1.2s; mix-blend-mode: screen; }
+  body.night .leo[data-pose=leo_laptop] .glow { opacity: 1; animation: flicker 5s infinite; }
+  @keyframes flicker { 50% { opacity: .75; } }
+  @keyframes breathe { 50% { transform: scale(1.008, 1.016); } }
+  .bubble { position: absolute; right: 78%; top: 6%; white-space: nowrap; background: #fff; color: #1c1f26; font: 13px/1 var(--mono); padding: 9px 12px; border-radius: 12px 12px 2px 12px; box-shadow: 0 8px 24px rgba(30,50,90,.15); opacity: 0; transform: translateY(6px); transition: .25s; }
+  .leo:hover .bubble { opacity: 1; transform: none; }
+  .fade { position: absolute; left: 0; right: 0; bottom: 0; height: 16%; background: linear-gradient(transparent, var(--paper)); transition: background .6s; }
+  body.night .layer.far, body.night .layer.back, body.night .front img.cl { filter: brightness(.58) sepia(.25) hue-rotate(185deg) saturate(1.6); }
+
+  /* ---------- 星空太极主题 ---------- */
+  .skyl, .cosmosl { position: absolute; inset: 0; transition: opacity 1.4s; }
+  .cosmosl { opacity: 0; pointer-events: none; }
+  body.cosmos .skyl { opacity: 0; pointer-events: none; }
+  body.cosmos .cosmosl { opacity: 1; }
+  body.cosmos #sky { background: radial-gradient(ellipse at 48% 30%, #13265a 0%, #060b1d 55%, #02030a 100%) !important; }
+  .tilt { position: absolute; width: calc(var(--w) * .65); left: calc(var(--x) + var(--w) * .22); top: calc(var(--y) + var(--w) * .02); }
+  .disc canvas { display: block; width: 100%; height: calc(var(--w) * .4); }
+  .halo { position: absolute; width: calc(var(--w) * .5); height: calc(var(--w) * .2); left: calc(var(--x) + var(--w) * .21); top: calc(var(--y) + var(--w) * .1); border-radius: 50%; background: radial-gradient(closest-side, rgba(80,130,255,.16), transparent); transform: rotate(-12deg); animation: pulse 7s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .55; } }
+  .ridge { position: absolute; width: var(--w); left: var(--x); top: calc(var(--y) + var(--w) * .025); }
+  .leo-c { position: absolute; width: calc(var(--w) * .2); left: calc(var(--x) + var(--w) * .73); top: calc(var(--y) + var(--w) * .234); pointer-events: auto; cursor: pointer; animation: breathe 3.6s ease-in-out infinite; transform-origin: 50% 98%; }
+  body.cosmos .rig img { filter: brightness(.72) saturate(.8) drop-shadow(0 8px 8px rgba(2,8,20,.4)); }
+  .leo-c::before { z-index: 0; background: rgba(2,8,20,.6); filter: blur(6px); }
+  .leo-c .rig { z-index: 1; }
+  .seg { display: flex; background: rgba(255,255,255,.92); border: 1px solid rgba(0,0,0,.06); border-radius: 99px; padding: 3px; box-shadow: 0 2px 10px rgba(30,60,110,.08); }
+  .seg button { border: 0; background: none; border-radius: 99px; padding: 5px 12px; font: 14px var(--serif); color: #38404e; cursor: pointer; }
+  .seg button.on { background: #1f2229; color: #fff; }
+
+  nav { position: absolute; z-index: 5; top: 0; left: 0; right: 0; max-width: 1024px; margin: 0 auto; padding: 22px 0; display: flex; align-items: center; gap: 30px; }
+  .logo { font: 44px/1 "Pinyon Script", cursive; color: var(--blue); position: relative; margin-right: auto; padding: 0 6px 8px 0; }
+  .logo svg { position: absolute; left: 0; bottom: -2px; width: 100%; height: 14px; }
+  nav .links { display: flex; gap: 26px; font-size: 16px; color: #38404e; }
+  nav .links a:hover { color: var(--blue); }
+  .pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.92); border: 1px solid rgba(0,0,0,.06); border-radius: 99px; padding: 7px 10px 7px 14px; font-size: 14px; color: #38404e; box-shadow: 0 2px 10px rgba(30,60,110,.08); }
+  .pill kbd { font: 11px var(--mono); border: 1px solid #ddd; border-radius: 6px; padding: 1px 6px; color: #666; }
+  .toggle { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1px solid rgba(0,0,0,.06); cursor: pointer; font-size: 15px; color: #38404e; box-shadow: 0 2px 10px rgba(30,60,110,.08); }
+  body.night nav .links { color: #c9d3ea; }
+
+  .intro { position: absolute; z-index: 4; left: 0; right: 0; max-width: 1024px; margin: 0 auto; top: calc(var(--y) + var(--H) * .55); }
+  .intro .role { font-size: 19px; color: #3d4452; letter-spacing: .5px; }
+  .intro .role span { color: var(--mute); }
+  .cta { display: flex; gap: 12px; margin-top: 22px; }
+  .btn { padding: 13px 20px; border-radius: 99px; font-size: 16px; font-weight: 600; transition: transform .15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.dark { background: #1f2229; color: #fff; }
+  .btn.ghost { background: rgba(255,255,255,.55); border: 1px solid rgba(0,0,0,.08); backdrop-filter: blur(6px); color: #1f2229; }
+  body.night .intro .role { color: #dfe6f5; }
+  body.night .btn.dark { background: #f2efe6; color: #111; }
+  body.night .btn.ghost { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); color: #eef; }
+
+  /* ---------- 下半页 ---------- */
+  .wrap { max-width: 1024px; margin: 0 auto; padding: 36px 0 120px; display: grid; grid-template-columns: 1fr 260px; gap: 72px; }
+  h2 { font: 700 25px/1 var(--serif); margin: 0 0 26px; display: flex; align-items: baseline; gap: 14px; }
+  h2 a { font: 400 17px var(--serif); color: var(--blue); border-bottom: 1px solid currentColor; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card { border: 1px solid var(--line); border-radius: 18px; padding: 10px; background: var(--chip); transition: transform .2s, box-shadow .2s; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(20,30,60,.10); }
+  .art { position: relative; height: 184px; border-radius: 10px; overflow: hidden; color: #fff; }
+  .art.g { background: radial-gradient(120% 90% at 70% 0%, #1d5a43, #0b1813 70%); }
+  .art.b { background: radial-gradient(120% 90% at 70% 0%, #1f4b9a, #0a1226 70%); }
+  .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .art .tl, .art .tr, .art .br { position: absolute; font: 11px/1 var(--mono); letter-spacing: 1.5px; }
+  .art .tl { left: 14px; top: 14px; } .art .tr { right: 14px; top: 14px; } .art .br { right: 14px; bottom: 14px; opacity: .8; }
+  .art .tr i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; }
+  .art .big { position: absolute; left: 22px; bottom: 12px; font: 700 76px/1 "LXGW WenKai Screen", serif; }
+  .art .sig { position: absolute; left: 18px; bottom: 22px; font: 52px/1 "Pinyon Script", cursive; transform: rotate(-6deg); }
+  .card h3 { font: 700 21px/1.3 var(--serif); margin: 16px 8px 8px; }
+  .card p { font-size: 16px; line-height: 1.6; color: var(--mute); margin: 0 8px 10px; }
+  .posts { margin-top: 56px; }
+  .post { display: grid; grid-template-columns: 88px 1fr; gap: 14px; padding: 18px 0; border-top: 1px solid var(--line); }
+  .post time { font: 12px/1.9 var(--mono); color: var(--mute); }
+  .post b { font-size: 18px; } .post span { display: block; color: var(--mute); font-size: 15px; margin-top: 4px; }
+  .post:hover b { color: var(--blue); }
+  aside h4 { font: 600 12px/1 var(--mono); letter-spacing: 3px; color: var(--mute); margin: 0 0 18px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 44px; }
+  .chips a { border: 1px solid var(--line); background: var(--chip); border-radius: 99px; padding: 7px 13px; font-size: 15px; font-weight: 600; }
+  .chips a small { font: 11px var(--mono); color: var(--mute); margin-left: 4px; }
+  .else a { display: grid; grid-template-columns: 22px 1fr; margin-bottom: 16px; font-size: 16px; }
+  .else a::before { content: '→'; color: var(--blue); }
+  .else small { grid-column: 2; font: 12px var(--mono); color: var(--mute); margin-top: 3px; }
+  .float { position: fixed; right: 26px; bottom: 26px; z-index: 9; display: flex; align-items: center; gap: 8px; background: var(--chip); border: 1px solid var(--line); border-radius: 99px; padding: 5px 16px 5px 5px; font-weight: 600; box-shadow: 0 10px 30px rgba(20,30,60,.12); }
+  .float span { width: 34px; height: 34px; border-radius: 50%; background: #e9f1fb url(leo_sit.webp) 45% 6% / 230% no-repeat; }
+  .site-footer { max-width: 1024px; margin: 0 auto; padding: 20px 0 40px; border-top: 1px solid var(--line); color: var(--mute); font-size: 12px; }
+  .site-footer a { font-size: 14px; color: var(--blue); }
+
+  @media (max-width: 1100px) { nav, .intro, .wrap, .site-footer { margin: 0 32px; } }
+  @media (max-width: 700px) {
+    :root { --w: 230vw; --x: -117vw; --y: 150px; }
+    nav { padding: 16px 0; gap: 12px; margin: 0 20px; } nav .links, .pill { display: none; } .logo { font-size: 36px; }
+    .orb { margin-top: 150px; }
+    .intro { margin: 0 20px; top: 92px; } .intro .role { font-size: 17px; }
+    .wrap { grid-template-columns: 1fr; margin: 0 20px; gap: 48px; } .cards { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .leo, .leo-c, .drift-a, .drift-b, .halo { animation: none !important; }
+    .rig img, body, #sky, #stars, .skyl, .cosmosl { transition: none; }
+  }
+</style>
+</head>
+<body>
+<section class="hero" id="hero">
+  <div id="sky"></div>
+  <canvas id="stars"></canvas>
+  <div class="skyl">
+  <div class="orb" id="orb"></div>
+  <img class="layer far drift-b" src="clouds_a.webp" alt="" data-p="6" />
+  <img class="layer back drift-a" src="clouds_a.webp" alt="" data-p="12" />
+  <div class="layer front" data-p="22">
+    <div class="leo actor" id="leo">
+      <div class="rig"><img class="on" src="leo_sit.webp" alt="一只坐在云上的 3D 雪豹" /><img alt="" /></div>
+      <div class="glow"></div>
+      <div class="bubble" id="bubble"></div>
+    </div>
+    <img class="cl" src="clouds_b.webp" alt="" />
+  </div>
+  </div>
+  <div class="cosmosl">
+    <div class="halo"></div>
+    <div class="tilt"><div class="disc"><canvas id="gal"></canvas></div></div>
+    <img class="ridge" src="ridge.webp" alt="" />
+    <div class="leo-c actor" id="leoC"><div class="rig"><img class="on" src="leo_sit.webp" alt="仰望星空太极的小雪豹" /><img alt="" /></div></div>
+  </div>
+  <div class="fade"></div>
+
+  <nav>
+    <a class="logo" href="/">Uncia<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 9 C 60 2, 120 14, 198 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+    <div class="links"><a href="/ai-learning/">AI 学习</a><a href="/philosophy/">哲学</a><a href="/methods/">工作方法论</a><a href="/works/">作品展示</a></div>
+    <div class="seg" id="seg"><button data-th="sky" title="云端 · 跟着北京时间">☁ 云端</button><button data-th="cosmos" title="星空太极">☯ 太极</button></div>
+  </nav>
+
+  <div class="intro">
+    <div class="role">学 AI，想问题，做点东西。<br><span>把想法慢慢变成作品。</span></div>
+    <div class="cta"><a class="btn dark" href="/works/">看作品 →</a><a class="btn ghost" href="/ai-learning/">读文章</a></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <main>
+    <h2>从这里开始 <a href="/ai-learning/">AI 学习 →</a></h2>
+    <div class="cards">
+      <a class="card" href="/p/ai-start/">
+        <div class="art g"><svg data-c="#4fd39a"></svg>
+          <span class="tl">№ 01</span><span class="tr"><i style="background:#4fd39a"></i>入门 · 公开版</span>
+          <span class="big">共创</span><span class="br">AI · START</span></div>
+        <h3>AI 入门：从聊天走向共创</h3>
+        <p>从已有材料出发，拆问题、做初稿，再用判断和验收把协作接起来。</p>
+      </a>
+      <a class="card" href="/p/ai-workflows/">
+        <div class="art b"><svg data-c="#7fb0ff"></svg>
+          <span class="tl">№ 02</span><span class="tr"><i style="background:#7fb0ff"></i>进阶 · 公开版</span>
+          <span class="sig">Workflow</span><span class="br">AI · PRACTICE</span></div>
+        <h3>AI 进阶：连成工作流</h3>
+        <p>画图、纪要、数据与自动化：六种工作流都从输入和完成条件开始。</p>
+      </a>
+    </div>
+
+    <div class="posts">
+      <h2>做出来的东西 <a href="/works/">作品展示 →</a></h2>
+      <a class="post" href="/multi-agent/"><time>协作演示</time><div><b>一个主 Agent，几条并行路径</b><span>点击角色看分工、交付物与证据，模型和架构按官方资料更新。</span></div></a>
+      <a class="post" href="/new-zealand/"><time>路线与灵感</time><div><b>新西兰：把行程做成一本手记</b><span>城市路线、带出处的目的地参考图，以及行程妙搭。</span></div></a>
+      <a class="post" href="/games/"><time>小游戏</time><div><b>飞行之前，做几个小游戏</b><span>南岛知识闯关、德州学习与思维练习，逐一注明访问和离线限制。</span></div></a>
+      <a class="post" href="/p/skill-six-step-method/"><time>学习方法</time><div><b>拆一个 Skill，不止看它装了什么</b><span>从交付、动作、顺序、分工、约束和原则，拆出可复用的方法。</span></div></a>
+    </div>
+  </main>
+  <aside>
+    <h4>按话题浏览</h4>
+    <div class="chips"><a href="/ai-learning/">AI 学习</a><a href="/philosophy/">哲学</a><a href="/methods/">工作方法论</a><a href="/works/">作品展示</a></div>
+    <h4>别处</h4>
+    <div class="else">
+      <a href="/contact/">微信<small>扫码添加好友</small></a>
+      <a href="https://github.com/xueuncia-product">GitHub<small>@xueuncia-product</small></a>
+    </div>
+  </aside>
+</div>
+<footer class="site-footer">© 2026 雪豹 Uncia · <a href="/old-days/">旧时光</a></footer>
+<a class="float" href="/contact/"><span></span>找我</a>
+
+<script>
+  // ---- 天空跟着北京时间走（?t=14 可手动指定小时） ----
+  const bj = () => { const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' })); return d.getHours() + d.getMinutes() / 60; };
+  const q = new URLSearchParams(location.search).get('t');
+  let hour = q !== null ? +q : bj();
+  const SKY = { dawn: ['#f4c4a6', '#d6e6f2'], day: ['#8cc2ee', '#e3f1fb'], dusk: ['#f0a07c', '#f6d9c0'], night: ['#0b1730', '#2f4470'] };
+  const sky = document.getElementById('sky'), orb = document.getElementById('orb');
+  function paint() {
+    const h = hour, night = h < 5.5 || h >= 19.5;
+    const ph = night ? 'night' : h < 8 ? 'dawn' : h < 16.5 ? 'day' : 'dusk';
+    document.body.classList.toggle('night', night || theme === 'cosmos');
+    document.body.classList.toggle('cosmos', theme === 'cosmos');
+    document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.th === theme));
+    sky.style.background = `linear-gradient(${SKY[ph][0]}, ${SKY[ph][1]} 75%)`;
+    const t = night ? (((h + 24 - 19.5) % 24) / 10) : (h - 5.5) / 14;
+    orb.className = 'orb ' + (night ? 'moon' : 'sun');
+    orb.style.left = (16 + t * 52) + '%';
+    orb.style.top = (20 + (1 - Math.sin(Math.PI * Math.min(Math.max(t, 0), 1))) * 22) + '%';
+    const hh = Math.floor(h), mm = String(Math.round((h - hh) * 60)).padStart(2, '0');
+    document.getElementById('bubble').textContent = `北京 ${hh}:${mm} · ` + (night ? '还在加班' : ph === 'day' ? '晒太阳中' : '看日落');
+  }
+  let theme = 'sky';
+  try { theme = localStorage.getItem('theme') || theme; } catch {}
+  theme = new URLSearchParams(location.search).get('theme') || theme;
+  theme = theme === 'cosmos' ? 'cosmos' : 'sky';
+  try { localStorage.setItem('theme', theme); } catch {}
+  paint();
+  setInterval(() => { if (q === null) { hour = bj(); paint(); } }, 60000);
+  document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { theme = b.dataset.th; try { localStorage.setItem('theme', theme); } catch {} paint(); });
+
+  // ---- 星星 ----
+  const cv = document.getElementById('stars'), cx = cv.getContext('2d');
+  let S = [], meteor = null;
+  const quietMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const stars = () => { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight;
+    S = Array.from({ length: 260 }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height * .75, r: Math.random() * 1.3 + .2, a: Math.random() * .7 + .3, f: Math.random() * 2 + .5, p: Math.random() * 7 })); };
+  stars(); addEventListener('resize', stars);
+  (function twinkle(t) {
+    if (!document.body.classList.contains('night') || document.hidden) { requestAnimationFrame(twinkle); return; }
+    if (quietMotion.matches) t = 0;
+    cx.clearRect(0, 0, cv.width, cv.height); cx.fillStyle = '#fff';
+    for (const s of S) { cx.globalAlpha = s.a * (.55 + .45 * Math.sin(t / 1000 * s.f + s.p)); cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 7); cx.fill(); }
+    if (theme === 'cosmos' && !quietMotion.matches) {
+      if (!meteor && Math.random() < .004) meteor = { x: Math.random() * cv.width * .8 + cv.width * .2, y: Math.random() * cv.height * .3, l: 0 };
+      if (meteor) { meteor.l += 14; const g = cx.createLinearGradient(meteor.x, meteor.y, meteor.x - meteor.l, meteor.y + meteor.l * .45);
+        g.addColorStop(0, 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,0)'); cx.globalAlpha = 1; cx.strokeStyle = g; cx.lineWidth = 1.4;
+        cx.beginPath(); cx.moveTo(meteor.x, meteor.y); cx.lineTo(meteor.x - meteor.l, meteor.y + meteor.l * .45); cx.stroke();
+        meteor.x -= 6; meteor.y += 2.7; if (meteor.l > 260) meteor = null; }
+    }
+    requestAnimationFrame(twinkle);
+  })(0);
+
+  // ---- 雪豹保持同一个落脚点，按巡视、整理毛发、休息的顺序行动 ----
+  const SEQUENCE = ['leo_sit', 'leo_look', 'leo_groom', 'leo_yawn', 'leo_lie', 'leo_stretch'];
+  const DWELL = { leo_sit: 26000, leo_look: 8500, leo_groom: 11000, leo_yawn: 5500, leo_lie: 42000, leo_stretch: 7000 };
+  const images = new Map(SEQUENCE.map(name => { const image = new Image(); image.src = name + '.webp'; return [name, image]; }));
+  const leo = document.getElementById('leo'), leoC = document.getElementById('leoC');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const activeScene = () => document.body.classList.contains('cosmos') ? 'cosmos' : (hour < 5.5 || hour >= 19.5) ? 'night' : 'day';
+  let scene = activeScene(), poseIndex = 0, timer, transition = 0;
+  async function showPose(name) {
+    const version = ++transition, el = scene === 'cosmos' ? leoC : leo;
+    const image = images.get(name);
+    try { await image.decode(); } catch { return; }
+    if (version !== transition) return;
+    const rig = el.querySelector('.rig'), current = rig.querySelector('img.on');
+    el.dataset.pose = name;
+    if (current.src === image.src) return;
+    const next = [...rig.querySelectorAll('img')].find(img => img !== current);
+    next.src = image.src; next.classList.add('on'); current.classList.remove('on');
+  }
+  function nextPose(index) {
+    clearTimeout(timer); poseIndex = index;
+    showPose(SEQUENCE[index]);
+    if (!reducedMotion.matches) timer = setTimeout(() => nextPose((index + 1) % SEQUENCE.length), DWELL[SEQUENCE[index]]);
+  }
+  nextPose(0);
+  setInterval(() => { const next = activeScene(); if (next !== scene) { scene = next; nextPose(0); } }, 1000);
+  [leo, leoC].forEach(el => el.onclick = () => { if (!reducedMotion.matches && poseIndex !== 1) nextPose(1); });
+  reducedMotion.addEventListener('change', () => nextPose(0));
+
+  // ---- 鼠标视差 ----
+  const layers = [...document.querySelectorAll('[data-p]')];
+  addEventListener('mousemove', e => { const mx = e.clientX / innerWidth - .5, my = e.clientY / innerHeight - .5;
+    layers.forEach(l => { const p = +l.dataset.p, flip = l.classList.contains('far') ? ' scaleX(-1)' : '';
+      l.style.transform = `translate(${-mx * p}px, ${-my * p * .4}px)` + flip; }); });
+
+  // ---- 作品卡上的电路纹 ----
+  document.querySelectorAll('.art svg').forEach(svg => {
+    const c = svg.dataset.c; let s = '';
+    for (let i = 0; i < 9; i++) {
+      let x = Math.round(Math.random() * 30) * 12, y = Math.round(Math.random() * 15) * 12, d = `M${x} ${y}`;
+      for (let k = 0; k < 4; k++) { Math.random() > .5 ? x += (Math.random() > .5 ? 1 : -1) * 12 * (2 + Math.floor(Math.random() * 6)) : y += (Math.random() > .5 ? 1 : -1) * 12 * (1 + Math.floor(Math.random() * 4)); d += ` L${x} ${y}`; }
+      s += `<path d="${d}" fill="none" stroke="${c}" stroke-opacity=".45" stroke-width="1"/><circle cx="${x}" cy="${y}" r="2.6" fill="none" stroke="${c}" stroke-opacity=".7"/>`;
+    }
+    s += `<rect x="${120 + Math.random() * 80}" y="${40 + Math.random() * 30}" width="70" height="36" rx="3" fill="#000" fill-opacity=".35" stroke="${c}" stroke-opacity=".35"/>`;
+    svg.setAttribute('viewBox', '0 0 360 184'); svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); svg.innerHTML = s;
+  });
+</script>
+<script type="module">
+  import { mountStarfield } from '/starfield.js';
+  mountStarfield(document.getElementById('gal'));
+</script>
+</body>
+</html>

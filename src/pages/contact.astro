@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="联系" active="contact">
+  <section class="contact-page">
+    <header class="section-heading"><small>Say hello</small><h1>用微信联系</h1><p>有想交流的话题，可以在这里找到我。</p></header>
+    <figure class="contact-code"><img src={`${base}/wechat-contact.jpg`} alt="雪豹 Uncia 的微信联系二维码" /></figure>
+    <p class="contact-hint">手机可长按识别，或保存图片后在微信中识别。</p>
+    <div class="contact-links"><a class="save-code" href={`${base}/wechat-contact.jpg`} download="雪豹-Uncia-微信二维码.jpg">保存二维码 ↓</a><a href={`${base}/`}>← 回首页</a></div>
+  </section>
+</Base>
+
+<style>
+  .contact-page { max-width: 720px; margin: 0 auto; }
+  .contact-code { width: min(100%, 420px); margin: 0; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+  .contact-code img { display: block; width: 100%; height: auto; }
+  .contact-hint { color: var(--mute); font-size: 15px; line-height: 1.8; margin: 20px 0; }
+  .contact-links { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; font-size: 15px; }
+  .contact-links a { text-decoration: none; }
+  .save-code { background: var(--ink); color: var(--paper); padding: 12px 20px; border-radius: 99px; }
+</style>

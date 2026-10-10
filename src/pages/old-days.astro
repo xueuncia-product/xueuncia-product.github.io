@@ -1,0 +1,5 @@
+---
+import page from '../../public/vault/index.html?raw';
+const html = page.replace('href="./gate.css"', 'href="/vault/gate.css"').replace('src="./gate.js"', 'src="/vault/gate.js"');
+---
+<Fragment set:html={html} />

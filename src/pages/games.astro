@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+const publicGame = 'https://q6oisf77xb.feishuapp.com/app/app_17emane35du';
+---
+<Base title="旅途中的小游戏" description="一个可公开访问的南岛旅行闯关，以及两件需要授权的学习与互动作品。" active="works">
+  <header class="section-heading"><small>Games for the journey</small><h1>旅途中的小游戏</h1><p>为旅途准备的几件小作品：认识南岛、练习决策，也做一点思维实验。</p></header>
+  <p class="offline-note">当前公开入口仍需联网；发布版尚未完成断网冷启动验证，飞机上的离线可用性暂不保证。</p>
+  <div class="game-grid">
+    <article class="game-card">
+      <div class="game-art travel-art"><small>01 · TRAVEL QUEST</small><strong>飞往中土</strong><span>地图 · 问答 · 剧情选择</span></div>
+      <div class="game-copy"><p class="access-status public-status">公开可访问 · 无需登录</p><h2>南岛旅行闯关</h2><p>在地图、问答与剧情选择中认识南岛的电影取景地、自然地理与人文。学习进度保存在当前浏览器。</p><p class="game-limit">当前入口需联网；添加到主屏幕或重新打开，仍不等于断网可玩。</p><a class="play-link" href={publicGame} target="_blank" rel="nofollow noopener noreferrer">打开旅行闯关 ↗</a></div>
+    </article>
+    <article class="game-card">
+      <div class="game-art poker-art"><small>02 · PRACTICE ROOM</small><strong>Pip</strong><span>虚拟筹码 · 行动参考 · 复盘</span></div>
+      <div class="game-copy"><p class="access-status">需登录与授权</p><h2>Pip 离线德州学习室</h2><p>虚拟筹码的德州练习、行动前参考与个人复盘。应用说明称数据保存在本机，是一件个人学习工具。</p><p class="game-limit">当前发布版的离线能力未实测。</p></div>
+    </article>
+    <article class="game-card">
+      <div class="game-art mind-art"><small>03 · THINKING LAB</small><strong>思维实验</strong><span>信任 · 群体决策 · 章节续玩</span></div>
+      <div class="game-copy"><p class="access-status">需登录与授权</p><h2>思维实验室</h2><p>中文互动科普合集，围绕信任与群体决策展开实验，支持章节续玩。</p><p class="game-limit">访问范围受限；缓存和断网运行能力尚未核实。</p></div>
+    </article>
+  </div>
+  <p class="games-footnote">访问范围与入口说明核对于 2026-10-10。受限作品只作介绍，登录后仍可能需要单独授权。</p>
+</Base>
+
+<style>
+  .offline-note { border-left: 3px solid var(--line); padding: 7px 0 7px 18px; color: var(--mute); font-size: 15px; line-height: 1.8; max-width: 720px; margin: -12px 0 32px; }
+  .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }.game-card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--chip); }
+  .game-art { height: 210px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; color: #f2f3ec; }.game-art small { font: 10px var(--mono); letter-spacing: 1.5px; opacity: .7; }.game-art strong { font-size: 44px; font-weight: 600; line-height: 1.2; letter-spacing: .04em; }.game-art span { font-size: 12px; opacity: .7; line-height: 1.8; }
+  .travel-art { background: radial-gradient(ellipse at 95% 0, #3b776f, #152d2b 65%); }.poker-art { background: radial-gradient(ellipse at 95% 0, #756444, #30261c 65%); }.poker-art strong { font-family: "Pinyon Script", cursive; font-size: 70px; font-weight: 400; }.mind-art { background: radial-gradient(ellipse at 95% 0, #66569a, #24213d 65%); }
+  .game-copy { padding: 22px; }.access-status { font-size: 12px; color: var(--mute); margin: 0 0 12px; }.public-status { color: var(--accent-methods); }.game-copy h2 { font-size: 23px; font-weight: 600; line-height: 1.5; margin: 0 0 12px; }.game-copy > p:not(.access-status) { color: var(--mute); font-size: 15px; line-height: 1.85; margin: 0 0 17px; }.game-copy > p.game-limit { border-top: 1px solid var(--line); padding-top: 15px; font-size: 13px; }.play-link { display: inline-block; font-size: 15px; text-decoration: none; margin-top: 4px; }
+  .games-footnote { color: var(--mute); font-size: 13px; line-height: 1.8; margin: 25px 0 0; }
+  @media(max-width:900px) { .game-grid { grid-template-columns: 1fr; }.game-card { display: grid; grid-template-columns: 250px 1fr; }.game-art { height: 100%; min-height: 225px; }.game-copy h2 { font-size: 24px; } }
+  @media(max-width:600px) { .game-card { display: block; }.game-art { min-height: 0; height: 185px; }.game-art strong { font-size: 39px; }.poker-art strong { font-size: 62px; }.game-copy { padding: 21px; }.game-copy h2 { font-size: 22px; }.offline-note { font-size: 14px; margin-top: -8px; } }
+</style>

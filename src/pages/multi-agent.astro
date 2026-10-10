@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import MultiAgentFlow from '../components/MultiAgentFlow.astro';
+---
+<Base title="多 Agent 协作" description="从任务拆分、并行工作到复核归并的互动流程演示。" active="works">
+  <header class="section-heading"><small>Working together</small><h1>多 Agent 协作</h1><p>把问题拆清楚，让不同角色并行推进，再把结果复核成一份可交付的答案。</p></header>
+  <MultiAgentFlow />
+  <article class="prose model-guide" id="models">
+    <h2>角色与模型，分开维护</h2>
+    <p>一个主 Agent 负责目标、分工与归并，同一工具内的子 Agent 分别研究、实现和复核。需要其他产品时，另用明确的交接接口；跨工具自动调度需要单独实现，不能把协议兼容当成已经连通。</p>
+    <p>这里是流程演示，下面是截至 <time datetime="2026-10-10">2026 年 10 月 10 日</time>可由官方资料确认的模型候选。它们不代表这个网页在运行模型，也不代表某个账号已启用全部型号。</p>
+    <div class="model-table"><table>
+      <thead><tr><th>工具／模型</th><th>当前可确认名称</th><th>能力与边界</th></tr></thead>
+      <tbody>
+        <tr><td>Codex / OpenAI</td><td>GPT-6.1 Sol<br /><code>gpt-6.1-sol</code></td><td>支持图像输入；同一 Codex 工具内可委派子 Agent。<a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol">模型</a> · <a href="https://learn.chatgpt.com/docs/agent-configuration/subagents">子 Agent</a></td></tr>
+        <tr><td>Claude Code</td><td>Claude Opus 5.5 / Fable 5.1</td><td>模型与 Claude Code 产品分开看；原生子 Agent 与实验性 Agent Teams 也是两种机制。<a href="https://platform.claude.com/docs/en/models/overview">模型目录</a> · <a href="https://code.claude.com/docs/en/sub-agents">子 Agent</a></td></tr>
+        <tr><td>Kimi</td><td>Kimi K3<br /><code>kimi-k3</code></td><td>模型支持视觉；Kimi Code 的原生 Agent 机制不等于模型 API 自动调度其他工具。<a href="https://platform.kimi.ai/docs/guide/kimi-k3-quickstart">模型</a> · <a href="https://www.kimi.com/code/docs/en/kimi-code-cli/customization/agents.html">Agent</a></td></tr>
+        <tr><td>DeepSeek</td><td>DeepSeek V4 Pro</td><td>文本推理与代码模型，不标成视觉模型。<a href="https://api-docs.deepseek.com/quick_start/pricing/">官方能力表</a></td></tr>
+        <tr><td>GLM</td><td>GLM-5.3</td><td>文本输入；GLM-5.3-FLASH 是另一款多模态模型，两者能力不能混写。<a href="https://docs.z.ai/guides/llm/glm-5.3">模型页</a></td></tr>
+        <tr><td>WorkBuddy</td><td>按产品实际配置选择</td><td>可确认多任务与模型配置；历史截图中的固定模型组合未核实。<a href="https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model">模型配置</a></td></tr>
+      </tbody>
+    </table></div>
+    <h2>并行之后，要能接回来</h2>
+    <p>每份交付留下结论、来源、完成条件和未决项。最终结果由一个负责人归并；其他 Agent 可以提供独立审查，避免每个分支维护不同的事实。</p>
+    <p><a href="/p/multi-agent-collaboration/">读协作方法：先分清事实和责任 →</a></p>
+  </article>
+</Base>
+
+<style>
+  .model-guide { margin-top: 64px; }
+  .model-table { overflow-x: auto; margin: 24px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.8; }
+  th, td { text-align: left; vertical-align: top; padding: 14px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--mute); font-weight: 500; white-space: nowrap; }
+  td:first-child { white-space: nowrap; }
+  td code { font-size: 12px; }
+</style>

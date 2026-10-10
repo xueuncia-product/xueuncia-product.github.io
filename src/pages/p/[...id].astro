@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { SECTIONS, canonicalSection } from '../../sections';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', (p) => !p.data.draft && !p.data.private && p.data.source !== 'sina');
+  return posts.map((p) => ({ params: { id: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+const s = SECTIONS.find((section) => section.key === canonicalSection(p.data.section))!;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title={p.data.title} description={p.data.summary} active={s.key}>
+  <article class="prose public-article">
+    <a class="article-back" href={`${base}/${s.key}/`}>← {s.name}</a>
+    <header class="article-heading">
+      <p class="article-meta"><span style={`color: ${s.color}`}>{s.name}</span><time datetime={p.data.date.toISOString()}>{p.data.date.toISOString().slice(0, 10)}</time></p>
+      <h1>{p.data.title}</h1>
+      {p.data.summary && <p class="article-lead">{p.data.summary}</p>}
+    </header>
+    <Content />
+  </article>
+</Base>

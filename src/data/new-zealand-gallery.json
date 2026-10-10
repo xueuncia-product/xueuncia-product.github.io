@@ -1,0 +1,68 @@
+[
+  {
+    "id": "lake-wanaka",
+    "title": "瓦纳卡湖 · 湖中孤树",
+    "imageUrl": "/new-zealand/lake-wanaka.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/%22The_Tree%22_Lake_Wanaka._NZ_%2824202789152%29.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:%22The_Tree%22_Lake_Wanaka._NZ_(24202789152).jpg",
+    "author": "Bernard Spragg. NZ",
+    "licenseName": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "label": "目的地参考图 · 非本人实拍"
+  },
+  {
+    "id": "lake-tekapo",
+    "title": "蒂卡波 · 好牧羊人教堂",
+    "imageUrl": "/new-zealand/lake-tekapo.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Church_of_the_Good_Shepherd_._%288626014819%29.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Church_of_the_Good_Shepherd_._(8626014819).jpg",
+    "author": "Bernard Spragg. NZ",
+    "licenseName": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "label": "目的地参考图 · 非本人实拍"
+  },
+  {
+    "id": "lake-pukaki",
+    "title": "普卡基湖 · 傍晚",
+    "imageUrl": "/new-zealand/lake-pukaki.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Evening_Lake_Pukaki.NZ._%2810339369126%29.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Evening_Lake_Pukaki.NZ._(10339369126).jpg",
+    "author": "Bernard Spragg. NZ",
+    "licenseName": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "label": "目的地参考图 · 非本人实拍"
+  },
+  {
+    "id": "milford-sound",
+    "title": "米尔福德峡湾 · 雾中游船",
+    "imageUrl": "/new-zealand/milford-sound.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/%22Milford_Mariner%22_Milford_Sound._%288111857251%29.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:%22Milford_Mariner%22_Milford_Sound._(8111857251).jpg",
+    "author": "Bernard Spragg. NZ",
+    "licenseName": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "label": "目的地参考图 · 非本人实拍"
+  },
+  {
+    "id": "hooker-valley",
+    "title": "胡克谷 · 吊桥与雪峰",
+    "imageUrl": "/new-zealand/hooker-valley.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/NZ_Hooker_Valley_track.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:NZ_Hooker_Valley_track.jpg",
+    "author": "Jan Helebrant",
+    "licenseName": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "label": "目的地参考图 · 非本人实拍"
+  },
+  {
+    "id": "glenorchy-night",
+    "title": "格林诺奇 · 星空与群山",
+    "imageUrl": "/new-zealand/glenorchy-night.jpg",
+    "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Astrophotography_workshop_in_Glenorchy%2C_New_Zealand.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Astrophotography_workshop_in_Glenorchy,_New_Zealand.jpg",
+    "author": "Paul Stewart",
+    "licenseName": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "label": "目的地参考图 · 非本人实拍"
+  }
+]

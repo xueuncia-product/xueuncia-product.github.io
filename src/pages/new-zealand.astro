@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import gallery from '../data/new-zealand-gallery.json';
+const route = [
+  ['基督城', '路线起点'],
+  ['费尔利／湖区', '湖泊与山口'],
+  ['哈威亚湖与瓦纳卡', '沿着湖区走'],
+  ['皇后镇', '山水与城市'],
+  ['马纳普里／峡湾区域', '往峡湾方向'],
+  ['Fox Glacier 西海岸', '西海岸一段'],
+  ['基督城', '返回起点'],
+];
+const publicImage = (url: string) => /^https:\/\/upload\.wikimedia\.org\//.test(url) || /^\/new-zealand\/[a-z0-9/_-]+\.(?:jpe?g|png|webp)$/i.test(url);
+const publicSource = (url: string) => /^https:\/\/(?:commons\.wikimedia\.org|creativecommons\.org)\//.test(url);
+if (gallery.length < 4 || gallery.length > 6 || gallery.some((photo) => !publicImage(photo.imageUrl) || !publicImage(photo.originalUrl) || !publicSource(photo.sourcePage) || !publicSource(photo.licenseUrl) || !photo.author || !photo.licenseName)) throw new Error('Reference photos need verified public images, credits and licenses.');
+---
+<Base title="新西兰南岛 · 路线与灵感" description="一份九天南岛自驾计划、行程工具介绍与有署名的目的地参考图库。" active="works">
+  <header class="section-heading travel-heading"><small>South Island · 2026</small><h1>新西兰南岛</h1><p>一份和朋友一起共创的自驾计划。湖泊、山口、皇后镇、峡湾与西海岸，最后回到基督城。</p><div class="trip-meta"><span>旅行计划</span><time datetime="2026-09-27">9 月 27 日</time><span>—</span><time datetime="2026-10-05">10 月 5 日</time><span>共九天</span></div></header>
+  <nav class="travel-index" aria-label="页面内容"><a href="#route">城市级路线 ↓</a><a href="#gallery">参考图库 ↓</a><a href="#planner">行程工具 ↓</a></nav>
+
+  <section id="route" class="travel-section" aria-labelledby="route-title">
+    <div class="section-label"><small>Route</small><h2 id="route-title">路线与计划</h2></div>
+    <ol class="route-line">{route.map(([city, note], i) => <li><span class="route-number">{String(i + 1).padStart(2, '0')}</span><div><strong>{city}</strong><span>{note}</span></div></li>)}</ol>
+    <p class="section-note">路线来自规划记录，尚未按逐站到访与拍摄日期整理。</p>
+  </section>
+
+  <section id="gallery" class="travel-section" aria-labelledby="gallery-title">
+    <div class="section-label"><small>Reference gallery</small><h2 id="gallery-title">目的地灵感</h2></div>
+    <p class="gallery-intro">以下为目的地参考图，非本人实拍，供路线规划与灵感浏览。个人照片与视频尚未加入。</p>
+    <div class="reference-gallery">{gallery.map((photo) => <figure class:list={{ 'gallery-wide': photo.id === 'hooker-valley' || photo.id === 'glenorchy-night', panorama: photo.id === 'glenorchy-night' }}>
+      <a class="photo-link" href={photo.imageUrl} target="_blank" rel="nofollow noopener noreferrer"><img src={photo.imageUrl} alt={`${photo.title}，目的地参考图，非本人实拍`} loading="lazy" decoding="async" /><span>参考图 · 非本人实拍</span></a>
+      <figcaption><h3>{photo.title}</h3><p>{photo.author} · <a href={photo.licenseUrl} target="_blank" rel="nofollow noopener noreferrer">{photo.licenseName}</a></p><a href={photo.sourcePage} target="_blank" rel="nofollow noopener noreferrer">原始来源 ↗</a></figcaption>
+    </figure>)}</div>
+  </section>
+
+  <section id="planner" class="travel-section planner-section" aria-labelledby="planner-title">
+    <div class="section-label"><small>Travel planner</small><h2 id="planner-title">把行程做成一个工具</h2></div>
+    <p class="planner-intro">“行程手记”是两人共同规划南岛自驾的小工具。把城市路线、备选景点与讨论放在一起，让计划可以继续调整。</p>
+    <div class="planner-features"><div><b>从路线开始</b><p>选择预设路线或空白计划，再逐步添加景点。</p></div><div><b>一起调整</b><p>调整日期与顺序，让路线跟着讨论变化。</p></div><div><b>看道路路线</b><p>把各站串起来，检查自驾路线的安排。</p></div></div>
+    <a class="planner-link" href="https://q6oisf77xb.feishuapp.com/app/app_17b96aqeshg" target="_blank" rel="nofollow noopener noreferrer">打开行程手记 ↗</a>
+  </section>
+</Base>
+
+<style>
+  .trip-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 24px; color: var(--mute); font-size: 14px; }.trip-meta span:first-child { border: 1px solid var(--line); border-radius: 99px; padding: 6px 11px; color: var(--blue); margin-right: 8px; }
+  .travel-index { display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; }.travel-index a { text-decoration: none; }
+  .travel-section { margin-top: 64px; scroll-margin-top: 24px; }.section-label small { font: 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; color: var(--mute); }.section-label h2 { font-size: 29px; font-weight: 600; line-height: 1.5; margin: 10px 0 26px; }
+  .route-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; list-style: none; padding: 0; margin: 0; }.route-line li { display: flex; gap: 14px; padding: 20px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--chip); }.route-number { color: var(--blue); font: 12px/2 var(--mono); }.route-line strong { display: block; font-weight: 600; font-size: 17px; line-height: 1.6; }.route-line li div > span { display: block; color: var(--mute); font-size: 13px; line-height: 1.7; margin-top: 5px; }
+  .section-note, .gallery-intro { color: var(--mute); font-size: 15px; line-height: 1.8; }.section-note { margin: 18px 0 0; }.gallery-intro { max-width: 720px; margin: -8px 0 24px; }
+  .reference-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }.reference-gallery figure { margin: 0; }.photo-link { display: block; position: relative; overflow: hidden; border-radius: 15px; background: var(--chip); }.photo-link img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; transition: transform .4s; }.photo-link:hover img { transform: scale(1.025); }.photo-link > span { position: absolute; top: 12px; left: 12px; background: #1119; color: #fff; padding: 5px 9px; border-radius: 99px; font-size: 12px; backdrop-filter: blur(8px); }
+  figcaption { padding: 14px 2px 0; }figcaption h3 { margin: 0 0 7px; font-size: 20px; font-weight: 600; }figcaption p { color: var(--mute); font-size: 12px; line-height: 1.8; margin: 0 0 5px; }figcaption a { font-size: 12px; text-decoration: none; }
+  .reference-gallery .gallery-wide { grid-column: 1 / -1; }.gallery-wide .photo-link img { max-height: 460px; }.panorama .photo-link img { aspect-ratio: auto; height: auto; object-fit: contain; }
+  .planner-section { padding-top: 30px; border-top: 1px solid var(--line); }.planner-intro { max-width: 720px; color: var(--mute); font-size: 17px; line-height: 1.9; margin: -8px 0 26px; }.planner-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }.planner-features b { font-size: 19px; font-weight: 600; }.planner-features p { color: var(--mute); font-size: 15px; line-height: 1.8; margin: 10px 0 0; }
+  .planner-link { display: inline-block; margin-top: 26px; padding: 11px 18px; border: 1px solid var(--line); border-radius: 99px; font-size: 15px; text-decoration: none; }
+  @media(max-width:850px) { .route-line { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width:600px) { .travel-section { margin-top: 44px; }.travel-index { gap: 18px; font-size: 14px; }.section-label h2 { font-size: 25px; margin-bottom: 20px; }.route-line { grid-template-columns: 1fr; gap: 10px; }.route-line li { padding: 15px 17px; }.reference-gallery { grid-template-columns: 1fr; gap: 26px; }.planner-features { grid-template-columns: 1fr; gap: 24px; }.gallery-intro, .section-note { font-size: 14px; } }
+  @media(prefers-reduced-motion:reduce) { .photo-link img { transition: none; }.photo-link:hover img { transform: none; } }
+</style>
