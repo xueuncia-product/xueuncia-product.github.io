@@ -1,0 +1,55 @@
+.companion {
+  --companion-size: 128px;
+  --companion-video-offset: 0px;
+  --companion-ink: #203547;
+  --companion-paper: #f6fbfff0;
+  --companion-line: #8aa4b747;
+  position: fixed;
+  z-index: 40;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--companion-video-offset));
+  width: var(--companion-size);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: var(--companion-ink);
+  font-family: var(--ui-font, system-ui, sans-serif);
+  pointer-events: none;
+}
+.companion[hidden], .companion [hidden] { display: none !important; }
+.companion[data-theme="cosmos"], .companion[data-theme="night"] { --companion-ink: #dae5f4; --companion-paper: #172534ef; --companion-line: #a4b9cf4a; }
+.companion[data-theme="ink"] { --companion-ink: #302e27; --companion-paper: #f6f0e5ef; --companion-line: #8c786d52; }
+.companion button { padding: 0; border: 0; font-family: inherit; color: inherit; cursor: pointer; pointer-events: auto; }
+.companion button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.companion-stage { position: relative; width: 100%; }
+.companion-greet { display: block; width: 100%; background: transparent; border-radius: 35%; }
+.companion-rig { position: relative; display: block; width: 100%; aspect-ratio: 1; transform-origin: 50% 96%; animation: companion-breathe 4s ease-in-out infinite; }
+.companion-rig::before { content: ''; position: absolute; left: 23%; right: 21%; bottom: 1%; height: 5%; background: #15263829; filter: blur(4px); border-radius: 50%; }
+.companion-rig img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .6s ease-in-out; }
+.companion-rig img.is-current { opacity: 1; }
+.companion[data-theme="cosmos"] .companion-rig img, .companion[data-theme="night"] .companion-rig img { filter: brightness(.88) drop-shadow(0 4px 12px #04101e8a); }
+.companion[data-theme="ink"] .companion-rig { width: 83%; margin: 0 auto; }
+.companion[data-pose="look"] .companion-rig { animation: companion-look 4s ease-in-out infinite; }
+.companion[data-pose="groom"] .companion-rig { animation: companion-groom 2.4s ease-in-out infinite; }
+.companion[data-pose="stretch"] .companion-rig { animation: companion-stretch 3.2s ease-in-out infinite; }
+.companion-caption { display: inline-block; padding: 5px 9px; border: 1px solid var(--companion-line); border-radius: 20px; background: var(--companion-paper); font-size: 10px; line-height: 1.4; letter-spacing: .04em; }
+.companion-hide { position: absolute; top: 0; right: 0; z-index: 1; width: 32px; height: 32px; border: 1px solid var(--companion-line) !important; background: var(--companion-paper); border-radius: 50%; font: 18px/1 system-ui !important; }
+.companion-hide:hover, .companion-restore:hover { filter: brightness(.94); }
+.companion-speech { position: absolute; bottom: calc(100% + 5px); right: 0; min-width: 172px; max-width: 220px; margin: 0; padding: 11px 13px; border: 1px solid var(--companion-line); border-radius: 12px 12px 2px 12px; background: var(--companion-paper); font-size: 12px; line-height: 1.6; box-shadow: 0 6px 20px #071c3220; }
+.companion-restore { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: max-content; gap: 6px; min-height: 40px; padding: 7px 10px !important; border: 1px solid var(--companion-line) !important; border-radius: 24px; background: var(--companion-paper); font-size: 11px; line-height: 1.4; white-space: nowrap; }
+.companion-restore svg { width: 16px; height: 16px; fill: currentColor; }
+.companion.is-paused .companion-rig { animation-play-state: paused; }
+@keyframes companion-breathe { 50% { transform: scale(1.008, 1.018); } }
+@keyframes companion-look { 50% { transform: rotate(-1.4deg) translateY(-.5%); } }
+@keyframes companion-groom { 50% { transform: rotate(1deg) scaleY(.985); } }
+@keyframes companion-stretch { 50% { transform: scale(1.025, 1.03); } }
+@media (max-width: 700px) {
+  .companion { --companion-size: 76px; right: max(10px, env(safe-area-inset-right)); bottom: calc(max(8px, env(safe-area-inset-bottom)) + var(--companion-video-offset)); }
+  .companion-caption { padding: 4px 7px; font-size: 9px; }
+  .companion-hide { top: -8px; right: -2px; width: 30px; height: 30px; }
+  .companion-restore { min-height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .companion-rig { animation: none !important; }
+  .companion-rig img { transition: none; }
+}

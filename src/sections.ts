@@ -6,6 +6,6 @@ export const SECTIONS = [
 ] as const;
 
 export const LEGACY_SECTIONS: Record<string, string> = {
-  articles: 'ai-learning', ideas: 'ai-learning', videos: 'ai-learning', gallery: 'works',
+  articles: 'ai-learning', ideas: 'ai-learning', videos: 'works', gallery: 'works',
 };
 export const canonicalSection = (key: string) => LEGACY_SECTIONS[key] || key;

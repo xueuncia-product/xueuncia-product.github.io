@@ -6,13 +6,17 @@
   <meta name="robots" content="noindex" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'" />
   <title>旧时光 · 雪豹 Uncia</title>
-  <link rel="stylesheet" href="/fonts/fonts.css?v=themes-20261010" />
+  <link rel="stylesheet" href="/fonts/fonts.css?v=redesign-20261010" />
   <link rel="stylesheet" href="./gate.css" />
-  <link rel="stylesheet" href="/themes/scenes.css" />
-  <link rel="stylesheet" href="/themes/typography.css" />
-  <script type="module" src="/themes/scenes.js"></script>
+  <link rel="stylesheet" href="/themes/scenes.css?v=redesign-20261010" />
+  <link rel="stylesheet" href="/themes/typography.css?v=redesign-20261010" />
+  <link rel="stylesheet" href="/shell.css?v=redesign-20261010" />
+  <link rel="stylesheet" href="/companion.css?v=redesign-20261010" />
+  <script type="module" src="/themes/scenes.js?v=redesign-20261010"></script>
+  <script type="module" src="/site.js?v=redesign-20261010"></script>
+  <script type="module" src="/companion.js?v=redesign-20261010"></script>
 </head>
-<body>
+<body data-page-kind="section">
   <div data-theme-scene data-scene-key="old-days" aria-hidden="true"></div>
   <header class="vault-shell vault-topbar">
     <a class="vault-logo" href="/" aria-label="雪豹 Uncia 首页">Uncia</a>
@@ -20,9 +24,11 @@
     <div class="vault-actions">
       <div class="vault-theme" aria-label="页面主题"><button type="button" data-theme="sky" aria-pressed="true"><span aria-hidden="true">☁</span> 云端</button><button type="button" data-theme="cosmos" aria-pressed="false"><span aria-hidden="true">☯</span> 太极</button><button type="button" data-theme="ink" aria-pressed="false"><svg class="theme-icon" aria-hidden="true" viewBox="0 0 20 20"><path d="m13.5 2 4 4-8.7 8.7-4.6.6.6-4.6Z"/><path d="m11.5 4 4 4M3 17l3-.3"/></svg> 水墨</button></div>
     </div>
+    <details class="mobile-navigation"><summary aria-label="打开网站导航">菜单</summary><nav aria-label="移动导航"><a href="/ai-learning/">AI 学习</a><a href="/philosophy/">哲学</a><a href="/methods/">工作方法论</a><a href="/works/">作品展示</a><a href="/old-days/" aria-current="page">旧时光</a><a href="/about/">关于</a><a href="/contact/">联系</a></nav></details>
   </header>
+  <div class="vault-shell page-toolbar"><nav class="breadcrumbs" aria-label="页面位置"><a href="/">首页</a><span aria-hidden="true">/</span><a href="/old-days/" data-vault-directory aria-current="page">旧时光</a><span data-vault-crumb-divider aria-hidden="true" hidden>/</span><span data-vault-current aria-current="page" hidden></span></nav><a class="parent-link vault-home-parent" href="/">← 回首页</a><button class="parent-link vault-back" type="button" hidden>← 返回目录</button></div>
   <main class="vault-shell vault-main">
-    <aside data-theme-verse></aside>
+    <div class="vault-verse-intro"><aside class="page-motto" data-theme-verse data-compact></aside></div>
     <header class="vault-heading"><small>UNCIA · ARCHIVE</small><h1>旧时光</h1><p>曾经写下的文字，如今公开放在这里，慢慢看。</p></header>
     <p class="vault-status" role="status" aria-live="polite">正在整理书架…</p><button class="vault-retry" type="button" hidden>重新读取</button>
     <section class="vault-library" aria-label="归档目录" hidden>
@@ -33,10 +39,14 @@
       <p class="vault-results" role="status" aria-live="polite"></p>
       <ol class="vault-list"></ol><button class="vault-more" type="button" hidden>再看一些</button>
     </section>
-    <section class="vault-reader" aria-label="文章阅读" hidden><button class="vault-back" type="button">← 返回目录</button><h2></h2><p class="vault-meta" role="status" aria-live="polite"></p><article class="vault-prose" aria-label="归档正文"></article></section>
+    <section class="vault-reader reading-layout" aria-label="文章阅读" hidden>
+      <aside class="reading-context"><div class="reading-context-sticky"><small>OLD DAYS · READING</small><h3>旧时光</h3><p>沿着曾经写下的文字，回到某一个当时。</p><button class="vault-back article-back" type="button">← 返回目录</button><div class="reading-metadata"><span data-vault-date></span><span data-vault-category></span><span data-vault-duration></span></div><div class="reading-progress"><label for="vault-reading-progress">阅读进度<span data-reading-percent>0%</span></label><progress id="vault-reading-progress" data-reading-progress max="100" value="0"></progress></div><a class="reading-contact" href="/works/">看看今天的作品 ↗</a></div></aside>
+      <div class="vault-reading-center"><header class="vault-article-heading"><small class="vault-kicker">UNCIA · ARCHIVE</small><h2 id="vault-post-title" role="heading" aria-level="1"></h2><p class="vault-meta" role="status" aria-live="polite"></p><details class="mobile-article-toc" hidden><summary>本篇目录</summary><nav class="vault-mobile-toc-items" data-article-toc aria-label="手机文章目录"></nav></details></header><article class="vault-prose" data-reading-body aria-label="归档正文"></article><nav class="article-end" aria-label="读完这篇"><span>这一段旧时光，到这里。</span><button class="vault-back" type="button">← 返回目录</button><a href="/">去首页</a><a href="/works/">作品展示 ↗</a></nav></div>
+      <aside class="reading-aside"><div class="reading-aside-sticky"><nav class="article-toc vault-toc" data-article-toc aria-label="本篇目录" hidden><small>本篇目录</small><div class="vault-toc-items"></div></nav><section class="vault-memory"><small>这段旧时光</small><p class="vault-memory-copy"></p><div class="vault-tags"></div></section><div class="vault-reader-verse"></div><nav class="related-reading vault-related" aria-label="同类篇目"><small>同类篇目</small><div class="vault-related-items"></div></nav></div></aside>
+    </section>
     <noscript><p>请开启浏览器 JavaScript 后浏览归档。</p></noscript>
   </main>
-  <footer class="vault-shell vault-footer"><span>© 2026 雪豹 Uncia</span><a href="/contact/">微信联系</a></footer>
+  <footer class="vault-shell vault-footer"><span>© 2026 雪豹 Uncia</span><a href="/contact/">微信联系</a><nav aria-label="页脚导航"><a href="/">首页</a><a href="/works/">作品</a><a href="/about/">关于</a><a href="/about/#fonts">字体声明</a><button type="button" data-back-to-top>回到顶部 ↑</button></nav></footer>
   <script type="module" src="./gate.js"></script>
 </body>
 </html>

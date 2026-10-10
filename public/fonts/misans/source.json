@@ -1,0 +1,16 @@
+{
+  "name": "MiSans",
+  "version": "official-2025-07-14",
+  "license": "MiSans Font Intellectual Property License Agreement",
+  "source": "https://hyperos.mi.com/font-download/MiSans.zip",
+  "member": "MiSans/woff2/MiSans-Regular.woff2",
+  "zip_bytes": 227880072,
+  "member_offset": 137872681,
+  "member_compressed_bytes": 4859883,
+  "member_crc32": 3834232383,
+  "font_bytes": 4858624,
+  "font_sha256": "d704c1a932c0bd7e8a071d276cd81c0ed0c9fecfa26ac234f4bed0559fe1cb2d",
+  "license_url": "https://hyperos.mi.com/font-download/MiSans%E5%AD%97%E4%BD%93%E7%9F%A5%E8%AF%86%E4%BA%A7%E6%9D%83%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE.pdf",
+  "license_sha256": "4a93a27cd2bd81b3b5ecfd0a853144a876fa26938a93a68443c67d74172fcb86",
+  "notice": "本网站太极主题使用 MiSans 字体。MiSans 由小米科技有限责任公司授权，免费商用，保持官方原始字形。"
+}

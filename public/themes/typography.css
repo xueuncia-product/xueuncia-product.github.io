@@ -1,13 +1,23 @@
 :root {
-  --theme-font: "Noto Sans SC Variable", sans-serif;
+  --body-font: "Google Sans Flex Variable", "PingFang SC", "Microsoft YaHei", "Noto Sans SC Variable", sans-serif;
+  --display-font: var(--body-font);
+  --ui-font: var(--body-font);
 }
 :root, body {
-  --serif: var(--theme-font);
-  --mono: "JetBrains Mono", var(--theme-font), ui-monospace, monospace;
+  --theme-font: var(--body-font);
+  --font-display: var(--display-font);
+  --font-body: var(--body-font);
+  --font-ui: var(--ui-font);
+  --serif: var(--body-font);
+  --mono: "JetBrains Mono", var(--ui-font), ui-monospace, monospace;
 }
 :root.cosmos, body.cosmos {
-  --theme-font: "Newsreader", "Noto Serif SC Variable", serif;
+  --body-font: "MiSans", "PingFang SC", "Microsoft YaHei", "Noto Sans SC Variable", sans-serif;
+  --display-font: var(--body-font);
+  --ui-font: var(--body-font);
 }
 :root.ink, body.ink {
-  --theme-font: "LXGW WenKai Screen", cursive;
+  --body-font: "Songti SC", "SimSun", "Noto Serif SC Variable", serif;
+  --display-font: "Ma Shan Zheng", var(--body-font);
+  --ui-font: "PingFang SC", "Microsoft YaHei", "Noto Sans SC Variable", sans-serif;
 }

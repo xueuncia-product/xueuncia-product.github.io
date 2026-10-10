@@ -5,8 +5,10 @@ const status = $('.vault-status'), retry = $('.vault-retry');
 const list = $('.vault-list'), search = $('[type=search]'), year = $('#vault-year'), more = $('.vault-more');
 const categories = $('.vault-categories'), prose = $('.vault-prose'), scene = $('[data-theme-scene]');
 let key = null, archive = null, generation = 0, reading = 0, limit = 80;
-let scope = 'featured', category = '', returnFocus = null, returnScroll = 0;
+let scope = 'featured', category = '', returnFocus = null, returnScroll = 0, activeFile = null;
 let requests = new AbortController();
+const verse = $('[data-theme-verse]'), initialScrollRestoration = history.scrollRestoration;
+history.scrollRestoration = 'manual';
 let theme;
 try { theme = localStorage.getItem('theme'); } catch { /* Browser storage can be unavailable. */ }
 const requestedTheme = new URLSearchParams(location.search).get('theme');
@@ -95,22 +97,39 @@ document.querySelectorAll('[data-theme]').forEach((button) => button.addEventLis
 function clearReader() {
   prose.replaceChildren();
   $('.vault-reader h2').textContent = ''; $('.vault-meta').textContent = '';
+  $('.vault-toc-items').replaceChildren(); $('.vault-toc').hidden = true;
+  $('.vault-mobile-toc-items').replaceChildren(); $('.mobile-article-toc').hidden = true; $('.mobile-article-toc').open = false;
+  $('.vault-related-items').replaceChildren(); $('.vault-memory-copy').textContent = ''; $('.vault-tags').replaceChildren();
+  $('.vault-reader .reading-aside-sticky').classList.remove('vault-long-rail');
+  for (const selector of ['[data-vault-date]', '[data-vault-category]', '[data-vault-duration]']) $(selector).textContent = '';
+  $('[data-reading-progress]').value = 0; $('[data-reading-percent]').textContent = '0%';
+}
+function setPage(post) {
+  document.body.classList.toggle('reading', !!post);
+  document.body.dataset.pageKind = post ? 'article' : 'section';
+  $('[data-vault-current]').hidden = !post; $('[data-vault-current]').textContent = post?.title || '';
+  $('[data-vault-crumb-divider]').hidden = !post;
+  post ? $('[data-vault-directory]').removeAttribute('aria-current') : $('[data-vault-directory]').setAttribute('aria-current', 'page');
+  $('.vault-home-parent').hidden = !!post; $('.page-toolbar .vault-back').hidden = !post;
+  document.title = post ? `${post.title} · 旧时光 · 雪豹 Uncia` : '旧时光 · 雪豹 Uncia';
+  verse.classList.toggle('page-motto', !post);
+  (post ? $('.vault-reader-verse') : $('.vault-verse-intro')).append(verse);
+  scene.dataset.sceneKey = post ? `old-days/${post.file}` : 'old-days';
 }
 function reset() {
   generation++; reading++; requests.abort(); requests = new AbortController();
-  key = null; archive = null; returnFocus = null; returnScroll = 0;
-  document.body.classList.remove('reading');
+  key = null; archive = null; returnFocus = null; returnScroll = 0; activeFile = null;
+  setPage(null);
   library.hidden = true; reader.hidden = true;
   status.textContent = ''; retry.hidden = true; retry.disabled = false;
   list.replaceChildren(); categories.replaceChildren(); search.value = '';
   year.replaceChildren(new Option('全部年份', ''));
   $('.vault-count').textContent = ''; $('.vault-results').textContent = '';
   scope = 'featured'; category = ''; limit = 80; clearReader();
-  scene.dataset.sceneKey = 'old-days';
   document.querySelectorAll('[data-scope]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.scope === scope)));
 }
-addEventListener('pagehide', reset);
-addEventListener('pageshow', (event) => { if (event.persisted && !archive) loadArchive(); });
+addEventListener('pagehide', () => { rememberLibrary(); reset(); history.scrollRestoration = initialScrollRestoration; });
+addEventListener('pageshow', (event) => { history.scrollRestoration = 'manual'; if (event.persisted && !archive) loadArchive(); });
 retry.addEventListener('click', loadArchive);
 
 async function fetchFile(path, type = 'arrayBuffer', signal = requests.signal) {
@@ -133,6 +152,66 @@ function validPost(post) {
     && (post.metadataOnly === undefined || typeof post.metadataOnly === 'boolean')
     && (post.tags === undefined || (Array.isArray(post.tags) && post.tags.every((tag) => typeof tag === 'string')));
 }
+function postInLocation() { return /^#post=([a-f0-9]{32}\.bin)$/.exec(location.hash)?.[1] || null; }
+function archiveURL(file) {
+  const url = new URL(location.href); url.hash = file ? `post=${file}` : ''; return url;
+}
+function savedFilters(state = history.state) {
+  if (state?.archiveNavigation !== 1 || !state.filters || typeof state.filters !== 'object') return null;
+  const value = state.filters;
+  return {
+    scope: value.scope === 'all' ? 'all' : 'featured',
+    category: typeof value.category === 'string' ? value.category.slice(0, 100) : '',
+    year: typeof value.year === 'string' && /^\d{4}$/.test(value.year) ? value.year : '',
+    search: typeof value.search === 'string' ? value.search.slice(0, 200) : '',
+    limit: Number.isInteger(value.limit) && value.limit >= 80 ? Math.min(value.limit, 100000) : 80,
+    scroll: Number.isFinite(value.scroll) && value.scroll >= 0 ? value.scroll : 0,
+    focusFile: typeof value.focusFile === 'string' && /^[a-f0-9]{32}\.bin$/.test(value.focusFile) ? value.focusFile : null,
+  };
+}
+function filtersSnapshot(focusFile = null) {
+  return { scope, category, year: year.value, search: search.value.slice(0, 200), limit, scroll: window.scrollY, focusFile };
+}
+function libraryState(filters) { return { archiveNavigation: 1, view: 'library', filters }; }
+function articleState(file, filters, fromLibrary) { return { archiveNavigation: 1, view: 'article', file, filters, fromLibrary }; }
+function rememberLibrary() {
+  if (archive && !library.hidden && !activeFile) history.replaceState(libraryState(filtersSnapshot()), '', archiveURL());
+}
+function restoreFilters(filters) {
+  scope = filters?.scope || 'featured'; category = filters?.category || ''; limit = filters?.limit || 80;
+  search.value = filters?.search || ''; year.value = filters?.year || '';
+  document.querySelectorAll('[data-scope]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.scope === scope)));
+  renderCategories(); renderList();
+}
+function showLibrary(filters = savedFilters()) {
+  reading++; activeFile = null; reader.hidden = true; library.hidden = false; clearReader(); setPage(null);
+  restoreFilters(filters);
+  const focus = filters?.focusFile ? list.querySelector(`[data-post="${filters.focusFile}"]`) : null;
+  (focus || (returnFocus?.isConnected ? returnFocus : null))?.focus({ preventScroll: true });
+  window.scrollTo({ top: filters?.scroll ?? returnScroll, behavior: 'instant' });
+  dispatchEvent(new Event('article-rendered'));
+}
+function returnToLibrary() {
+  const state = history.state, filters = savedFilters() || filtersSnapshot();
+  const hasParent = state?.archiveNavigation === 1 && state.view === 'article' && state.file === activeFile && state.fromLibrary === true;
+  showLibrary(filters);
+  if (hasParent) history.back();
+  else history.replaceState(libraryState(filters), '', archiveURL());
+}
+function syncLocation() {
+  if (!archive) return;
+  const file = postInLocation(), filters = savedFilters();
+  if (!file) { showLibrary(filters); return; }
+  if (file === activeFile && !reader.hidden) return;
+  const post = archive.find((item) => item.file === file);
+  if (post) { restoreFilters(filters); openPost(post, null, false); }
+  else {
+    showLibrary(filters); history.replaceState(libraryState(filters || filtersSnapshot()), '', archiveURL());
+    status.textContent = '没有找到这篇记录，可以从目录继续浏览。';
+  }
+}
+addEventListener('popstate', syncLocation);
+addEventListener('hashchange', syncLocation);
 async function loadArchive() {
   if (retry.disabled) return;
   const session = ++generation;
@@ -156,7 +235,9 @@ async function loadArchive() {
     for (const value of years) year.add(new Option(value, value));
     const daily = archive.filter((post) => post.category === '日常记录').length;
     $('.vault-count').textContent = `${archive.length.toLocaleString()} 篇记录 · ${archive.filter((post) => post.featured).length.toLocaleString()} 篇精选 · ${daily.toLocaleString()} 篇日常记录`;
-    status.textContent = ''; library.hidden = false; limit = 80; renderCategories(); renderList();
+    status.textContent = ''; library.hidden = false; restoreFilters(savedFilters());
+    if (postInLocation()) syncLocation();
+    else { history.replaceState(libraryState(savedFilters() || filtersSnapshot()), '', archiveURL()); showLibrary(savedFilters()); }
   } catch (error) {
     if (session !== generation || error.name === 'AbortError') return;
     status.textContent = error.name === 'OperationError' ? '归档文件已损坏，请稍后重试。' : error.message;
@@ -177,7 +258,7 @@ function renderCategories() {
     const button = document.createElement('button'); button.type = 'button';
     button.textContent = `${name || '全部分类'} ${count.toLocaleString()}`;
     button.setAttribute('aria-pressed', String(category === name));
-    button.addEventListener('click', () => { category = name; limit = 80; renderCategories(); renderList(); });
+    button.addEventListener('click', () => { category = name; limit = 80; renderCategories(); renderList(); rememberLibrary(); });
     categories.append(button);
   }
 }
@@ -188,7 +269,7 @@ function renderList() {
   for (const post of posts.slice(0, limit)) {
     const item = document.createElement('li'), button = document.createElement('button');
     const time = document.createElement('time'), copy = document.createElement('span'), title = document.createElement('strong'), meta = document.createElement('span');
-    button.type = 'button'; time.dateTime = post.date.slice(0, 10); time.textContent = post.date.slice(0, 10); title.textContent = post.title;
+    button.type = 'button'; button.dataset.post = post.file; time.dateTime = post.date.slice(0, 10); time.textContent = post.date.slice(0, 10); title.textContent = post.title;
     copy.className = 'vault-post-copy'; meta.className = 'vault-post-meta';
     meta.textContent = [post.category, post.featured ? '精选' : '', post.metadataOnly ? '仅存标题与日期' : '', ...(post.tags || []).slice(0, 3)].filter(Boolean).join(' · ');
     copy.append(title, meta);
@@ -201,23 +282,70 @@ function renderList() {
 document.querySelectorAll('[data-scope]').forEach((button) => button.addEventListener('click', () => {
   scope = button.dataset.scope; limit = 80;
   document.querySelectorAll('[data-scope]').forEach((item) => item.setAttribute('aria-pressed', String(item.dataset.scope === scope)));
-  renderCategories(); renderList();
+  renderCategories(); renderList(); rememberLibrary();
 }));
-search.addEventListener('input', () => { limit = 80; renderList(); });
-year.addEventListener('change', () => { limit = 80; renderList(); });
-more.addEventListener('click', () => { limit += 80; renderList(); });
-$('.vault-back').addEventListener('click', () => {
-  reading++; reader.hidden = true; library.hidden = false; clearReader();
-  document.body.classList.remove('reading');
-  scene.dataset.sceneKey = 'old-days';
-  returnFocus?.focus({ preventScroll: true }); window.scrollTo({ top: returnScroll });
+search.addEventListener('input', () => { limit = 80; renderList(); rememberLibrary(); });
+year.addEventListener('change', () => { limit = 80; renderList(); rememberLibrary(); });
+more.addEventListener('click', () => { limit += 80; renderList(); rememberLibrary(); });
+document.querySelectorAll('.vault-back').forEach((button) => button.addEventListener('click', returnToLibrary));
+$('[data-vault-directory]').addEventListener('click', (event) => { if (!reader.hidden) { event.preventDefault(); returnToLibrary(); } });
+
+function decorateArticle(post) {
+  const toc = $('.vault-toc-items'), mobile = $('.vault-mobile-toc-items');
+  toc.replaceChildren(); mobile.replaceChildren();
+  prose.querySelectorAll('h1,h2,h3').forEach((heading, index) => {
+    heading.id = `vault-section-${index + 1}`;
+    for (const container of [toc, mobile]) {
+      const button = document.createElement('button'); button.type = 'button'; button.dataset.heading = heading.id;
+      button.textContent = heading.textContent.trim().slice(0, 100) || `段落 ${index + 1}`;
+      if (heading.localName === 'h3') button.className = 'subheading';
+      button.addEventListener('click', () => heading.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }));
+      container.append(button);
+    }
+  });
+  $('.vault-toc').hidden = !toc.children.length;
+  $('.mobile-article-toc').hidden = !mobile.children.length;
+  $('.vault-reader .reading-aside-sticky').classList.toggle('vault-long-rail', toc.children.length > 8);
+  $('[data-vault-duration]').textContent = post.metadataOnly ? '仅存标题与日期' : `约 ${Math.max(1, Math.ceil(prose.textContent.replace(/\s/g, '').length / 450))} 分钟`;
+  dispatchEvent(new Event('article-rendered'));
+}
+$('.mobile-article-toc').addEventListener('toggle', () => dispatchEvent(new Event('article-rendered')));
+function readerContext(post) {
+  $('[data-vault-date]').textContent = post.date.slice(0, 10);
+  $('[data-vault-category]').textContent = post.category;
+  $('[data-vault-duration]').textContent = '正在读取…';
+  $('.vault-memory-copy').textContent = post.summary || (post.metadataOnly ? '这篇记录目前仅保留标题与日期。' : '保留当时写下的原文。');
+  for (const tag of [post.category, ...(post.tags || []).slice(0, 3)]) {
+    const chip = document.createElement('span'); chip.textContent = tag; $('.vault-tags').append(chip);
+  }
+  const related = archive.filter((item) => item.category === post.category && item.file !== post.file).slice(0, 3);
+  $('.vault-related').hidden = !related.length;
+  for (const item of related) {
+    const button = document.createElement('button'); button.type = 'button'; button.textContent = `${item.title} ↗`;
+    button.addEventListener('click', () => openPost(item, button)); $('.vault-related-items').append(button);
+  }
+}
+prose.addEventListener('click', (event) => {
+  const anchor = event.target.closest?.('a[href^="#"]');
+  if (!anchor) return;
+  event.preventDefault();
+  const heading = document.getElementById(anchor.getAttribute('href').slice(1));
+  if (heading && prose.contains(heading)) heading.scrollIntoView({ block: 'start' });
 });
-async function openPost(post, button) {
+async function openPost(post, button, navigate = true) {
+  const wasLibrary = reader.hidden, current = history.state;
+  let filters = savedFilters() || filtersSnapshot();
+  if (navigate && wasLibrary) {
+    returnFocus = button; returnScroll = window.scrollY;
+    filters = filtersSnapshot(button?.dataset.post || post.file);
+    history.replaceState(libraryState(filters), '', archiveURL());
+    history.pushState(articleState(post.file, filters, true), '', archiveURL(post.file));
+  } else if (navigate) history.replaceState(articleState(post.file, filters, current?.archiveNavigation === 1 && current.fromLibrary === true), '', archiveURL(post.file));
+  else if (current?.archiveNavigation !== 1 || current.view !== 'article' || current.file !== post.file) history.replaceState(articleState(post.file, filters, false), '', archiveURL(post.file));
   const session = generation, articleRequest = ++reading, sessionKey = key, signal = requests.signal;
-  returnFocus = button; returnScroll = window.scrollY;
+  activeFile = post.file;
   library.hidden = true; reader.hidden = false; clearReader();
-  document.body.classList.add('reading'); window.scrollTo({ top: 0 });
-  scene.dataset.sceneKey = `old-days/${post.file}`;
+  setPage(post); readerContext(post); window.scrollTo({ top: 0, behavior: 'instant' });
   $('.vault-reader h2').textContent = post.title;
   $('.vault-meta').textContent = `${post.date} · ${post.category}${post.metadataOnly ? ' · 仅存标题与日期' : ''} · 正在读取…`;
   $('.vault-back').focus();
@@ -227,6 +355,7 @@ async function openPost(post, button) {
     if (typeof content.html !== 'string') throw new Error('正文格式错误。');
     prose.replaceChildren(sanitizeArticle(content.html));
     $('.vault-meta').textContent = `${post.date} · ${post.category}${post.metadataOnly ? ' · 仅存标题与日期' : ''}`;
+    decorateArticle(post);
   } catch (error) {
     if (session === generation && articleRequest === reading && error.name !== 'AbortError') $('.vault-meta').textContent = '这篇记录暂时无法读取，请返回目录后重试。';
   }

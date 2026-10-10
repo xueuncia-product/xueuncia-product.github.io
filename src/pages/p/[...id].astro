@@ -9,18 +9,27 @@ export async function getStaticPaths() {
   return posts.map((p) => ({ params: { id: p.id }, props: { p } }));
 }
 const { p } = Astro.props;
-const { Content } = await render(p);
+const { Content, headings } = await render(p);
 const s = SECTIONS.find((section) => section.key === canonicalSection(p.data.section))!;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const related = (await getCollection('posts', (item) => !item.data.draft && !item.data.private && item.data.source !== 'sina' && canonicalSection(item.data.section) === s.key && item.id !== p.id)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+const minutes = Math.max(1, Math.ceil((p.body || '').replace(/<[^>]+>/g, '').length / 400));
+const sectionLink = `${base}/${s.key}/${p.id === 'jian-zhouqi' ? '#videos' : ''}`;
 ---
-<Base title={p.data.title} description={p.data.summary} active={s.key}>
-  <article class="prose public-article">
-    <a class="article-back" href={`${base}/${s.key}/`}>← {s.name}</a>
+<Base title={p.data.title} description={p.data.summary} active={s.key} pageKind="article">
+  <div class="reading-layout">
+    <aside class="reading-context"><div class="reading-context-sticky"><small>雪豹 · UNCIA</small><h2>{s.name}</h2><p>{s.desc}</p><a class="article-back" href={sectionLink}>← 回{s.name}</a><div class="reading-metadata"><time datetime={p.data.date.toISOString()}>{p.data.date.toISOString().slice(0, 10)}</time><span>约 {minutes} 分钟</span></div><div class="reading-progress"><label for="reading-progress">阅读进度 <span data-reading-percent aria-hidden="true">0%</span></label><progress id="reading-progress" max="100" value="0" data-reading-progress /></div></div></aside>
+  <article class="prose public-article" data-reading-body>
     <header class="article-heading">
       <p class="article-meta"><span style={`color: ${s.color}`}>{s.name}</span><time datetime={p.data.date.toISOString()}>{p.data.date.toISOString().slice(0, 10)}</time></p>
       <h1>{p.data.title}</h1>
       {p.data.summary && <p class="article-lead">{p.data.summary}</p>}
+      {toc.length > 0 && <details class="mobile-article-toc"><summary>本页目录</summary><nav aria-label="移动阅读目录" data-article-toc>{toc.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}</nav></details>}
     </header>
     <Content />
+    <div class="article-end"><span>读到这里，感谢你的时间。</span><a href={sectionLink}>继续浏览{s.name} →</a><a href={`${base}/`}>回首页</a></div>
   </article>
+  <aside class="reading-aside"><div class="reading-aside-sticky">{toc.length > 0 && <nav class="article-toc" aria-label="本页目录" data-article-toc><small>本页目录</small>{toc.map((h) => <a href={`#${h.slug}`} class:list={{ subheading: h.depth === 3 }}>{h.text}</a>)}</nav>}{related.length > 0 && <div class="related-reading"><small>接着读</small>{related.map((item) => <a href={`${base}/p/${item.id}/`}>{item.data.title}<span>→</span></a>)}</div>}<a class="reading-contact" href={`${base}/contact/`}>有想法，聊一聊 →</a></div></aside>
+  </div>
 </Base>

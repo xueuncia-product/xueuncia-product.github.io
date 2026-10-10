@@ -1,0 +1,8 @@
+/* MiSans: original Xiaomi WOFF2; static Regular, not a variable font. */
+@font-face {
+  font-family: "MiSans";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./files/misans-regular.woff2') format('woff2');
+}

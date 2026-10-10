@@ -96,10 +96,13 @@ function mountScene(container, verse) {
   const canvas = document.createElement('canvas'); canvas.className = 'theme-scene-galaxy';
   const technology = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   technology.setAttribute('viewBox', '0 0 1600 800'); technology.classList.add('theme-scene-tech');
-  container.append(backdrop, canvas, technology);
+  const atmosphere = document.createElement('div'); atmosphere.className = 'theme-scene-atmosphere';
+  const calm = document.createElement('div'); calm.className = 'theme-scene-calm';
+  container.append(backdrop, canvas, technology, atmosphere, calm);
   const context = canvas.getContext('2d');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let theme = '', key = '', stars = [], slot = 0, width = 0, height = 0, frameId = 0, time = 0, last = 0;
+  let theme = '', key = '', pageKind = '', stars = [], field = [], slot = 0, width = 0, height = 0, frameId = 0, time = 0, last = 0;
+  let suspended = false, heroVisible = false;
   const size = () => {
     width = container.clientWidth; height = container.clientHeight;
     const ratio = Math.min(devicePixelRatio || 1, 1.5);
@@ -110,9 +113,19 @@ function mountScene(container, verse) {
   function draw() {
     if (!context || theme !== 'cosmos') return;
     context.clearRect(0, 0, width, height);
-    const unit = Math.min(width * (width < 700 ? .35 : .23), height * .26), cx = width < 700 ? width * .7 : width * .78, cy = height * .18;
+    const article = pageKind === 'article';
+    const unit = Math.min(width * (width < 700 ? .4 : article ? .2 : .26), height * .32);
+    const cx = width < 700 ? width * .79 : width * (article ? .87 : .8), cy = height * (article ? .26 : .24);
     const yaw = .18 + Math.sin(time / 60000) * .3, pitch = -.52 + (slot % 4) * .15 + Math.sin(time / 80000) * .1;
     context.globalCompositeOperation = 'lighter';
+    for (const star of field) {
+      const p = projectStar(star, yaw * .6, pitch * .45);
+      if (p.scale < .2 || p.scale > 3) continue;
+      const x = width * .5 + p.x * width * .28, y = height * .5 + p.y * height * .38;
+      const alpha = star.alpha * (.72 + .28 * Math.sin(time / 7000 + star.x * 7));
+      context.fillStyle = `rgba(182,204,244,${alpha})`;
+      context.beginPath(); context.arc(x, y, Math.max(.4, star.radius * p.scale), 0, Math.PI * 2); context.fill();
+    }
     for (const star of stars) {
       const p = projectStar(star, yaw, pitch), x = cx + p.x * unit, y = cy + p.y * unit;
       const alpha = star.alpha * Math.min(1.2, p.scale);
@@ -133,18 +146,22 @@ function mountScene(container, verse) {
     context.globalCompositeOperation = 'source-over';
   }
   function animate(now) {
-    if (!document.hidden && now - last > 45) { time += Math.min(90, now - last); last = now; draw(); }
+    if (now - last > 45) { time += Math.min(90, now - last); last = now; draw(); }
     frameId = requestAnimationFrame(animate);
   }
   function motion() {
     cancelAnimationFrame(frameId); frameId = 0; draw();
-    if (theme === 'cosmos' && !reduced.matches && !document.hidden) { last = performance.now(); frameId = requestAnimationFrame(animate); }
+    const active = !reduced.matches && !document.hidden && !suspended && !heroVisible;
+    container.dataset.sceneMotion = active ? 'active' : 'still';
+    container.dataset.heroVisible = String(heroVisible);
+    if (theme === 'cosmos' && active) { last = performance.now(); frameId = requestAnimationFrame(animate); }
   }
   function refresh() {
     const nextTheme = document.documentElement.classList.contains('ink') || document.body.classList.contains('ink') ? 'ink' : document.documentElement.classList.contains('cosmos') || document.body.classList.contains('cosmos') ? 'cosmos' : 'sky';
     const nextKey = container.dataset.sceneKey || location.pathname;
-    if (nextTheme === theme && nextKey === key) return;
-    theme = nextTheme; key = nextKey; slot = sceneSlot(key);
+    const nextPageKind = document.body.dataset.pageKind || 'section';
+    if (nextTheme === theme && nextKey === key && nextPageKind === pageKind) return;
+    theme = nextTheme; key = nextKey; pageKind = nextPageKind; slot = sceneSlot(key);
     const seed = hashScene(key), kind = slot % 6;
     container.dataset.sceneTheme = theme; container.dataset.sceneKind = String(kind); container.dataset.sceneSeed = String(seed);
     container.style.setProperty('--scene-crop', `${16 + seed % 68}%`);
@@ -152,8 +169,14 @@ function mountScene(container, verse) {
     container.style.setProperty('--scene-cloud-crop', `${20 + seed % 60}%`);
     container.style.setProperty('--scene-cloud-image', `url("/${slot % 2 ? 'clouds_b' : 'clouds_a'}.webp")`);
     container.style.setProperty('--scene-hue', String((slot % 4) * 12 - 12));
-    technology.innerHTML = `<g fill="none" stroke="currentColor" stroke-width=".7"><path d="M${850 + seed % 130} 0v${110 + slot * 12}l110 110h260l150 150v300"/><path d="M1600 ${130 + slot * 22}h-330l-180 180v350"/><path d="M0 700h400l180-180h180"/><circle cx="${1210 + seed % 100}" cy="${220 + slot * 12}" r="58"/><circle cx="${1210 + seed % 100}" cy="${220 + slot * 12}" r="78" stroke-dasharray="2 14"/></g><g fill="currentColor"><circle cx="760" cy="520" r="3"/><circle cx="1270" cy="${130 + slot * 22}" r="3"/></g>`;
+    const rightPath = `M1600 ${130 + slot * 22}h-330l-180 180v350`;
+    const leftPath = 'M0 700h400l180-180h180';
+    technology.innerHTML = `<g fill="none" stroke="currentColor" stroke-width=".7"><path d="M${850 + seed % 130} 0v${110 + slot * 12}l110 110h260l150 150v300"/><path d="${rightPath}"/><path d="${leftPath}"/><circle cx="${1210 + seed % 100}" cy="${220 + slot * 12}" r="58"/><circle cx="${1210 + seed % 100}" cy="${220 + slot * 12}" r="78" stroke-dasharray="2 14"/></g><g class="theme-scene-lightpath" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 180"><path d="${rightPath}"/><path d="${leftPath}"/></g>`;
     stars = createGalaxy(seed, kind);
+    field = stars.filter((_, index) => index % 23 === 0).map((star, index) => ({
+      x: star.x * 3.6, y: star.y * 2.8, z: star.z * 1.2 + (index % 11 - 5) * .18,
+      radius: .45 + index % 5 * .12, alpha: .08 + index % 4 * .045,
+    }));
     if (verse) {
       const [text, credit, url] = theme === 'ink' ? [inkVerses[slot][0], inkVerses[slot][1], dao] : theme === 'cosmos' ? [cosmosVerses[slot][0], cosmosVerses[slot][1], poetry(cosmosVerses[slot][2])] : [skyVerses[slot], 'Henry David Thoreau · Walden', walden];
       verse.dataset.verseTheme = theme; verse.lang = theme === 'sky' ? 'en' : 'zh-CN';
@@ -168,10 +191,14 @@ function mountScene(container, verse) {
   new ResizeObserver(size).observe(container);
   const themeObserver = new MutationObserver(refresh);
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-  themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-page-kind'] });
   themeObserver.observe(container, { attributes: true, attributeFilter: ['data-scene-key'] });
   addEventListener('theme-scene-refresh', refresh);
   document.addEventListener('visibilitychange', motion); reduced.addEventListener('change', motion);
+  addEventListener('pagehide', () => { suspended = true; motion(); });
+  addEventListener('pageshow', () => { suspended = false; motion(); });
+  const hero = document.getElementById('hero');
+  if (hero) new IntersectionObserver(([entry]) => { heroVisible = entry.isIntersecting; motion(); }).observe(hero);
   refresh(); size();
 }
 if (typeof document !== 'undefined') {
