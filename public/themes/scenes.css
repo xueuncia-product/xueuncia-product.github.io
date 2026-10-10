@@ -14,14 +14,13 @@ html.night [data-scene-theme="sky"] .theme-scene-art, body.night [data-scene-the
 html.night [data-scene-theme="sky"], body.night [data-scene-theme="sky"] { background: #0b1729; }
 html.night [data-scene-theme="sky"] .theme-scene-tech, body.night [data-scene-theme="sky"] .theme-scene-tech { color: #9abbed; opacity: .58; }
 [data-theme-verse] { position: relative; z-index: 1; width: min(100%, 1088px); margin: 16px auto 0; padding: 30px 32px 35px; color: var(--ink, #243246); border-bottom: 1px solid var(--line, #cbd7e1); }
-.theme-verse-label { display: block; font: 10px/1.6 "JetBrains Mono", monospace; letter-spacing: .2em; color: var(--mute, #627184); }
-.theme-verse-text { max-width: 800px; margin: 15px 0 12px; font: 400 clamp(22px, 2.7vw, 32px)/1.65 "Newsreader", "LXGW WenKai Screen", "Songti SC", serif; text-wrap: balance; overflow-wrap: anywhere; }
-.theme-verse-source { display: inline-block; font: 12px/1.7 "LXGW WenKai Screen", "Songti SC", serif; color: var(--mute, #627184); text-decoration: none; text-underline-offset: 4px; }
+.theme-verse-label { display: block; font: 10px/1.6 var(--mono); letter-spacing: .2em; color: var(--mute, #627184); }
+.theme-verse-text { max-width: 800px; margin: 15px 0 12px; font: 400 clamp(22px, 2.7vw, 32px)/1.65 var(--serif); text-wrap: balance; overflow-wrap: anywhere; }
+.theme-verse-source { display: inline-block; font: 12px/1.7 var(--serif); color: var(--mute, #627184); text-decoration: none; text-underline-offset: 4px; }
 .theme-verse-source:hover { text-decoration: underline; }
-[data-verse-theme="ink"] .theme-verse-label { font-family: "LXGW WenKai Screen", "Songti SC", serif; color: #9c483e; letter-spacing: .25em; }
+[data-verse-theme="ink"] .theme-verse-label { font-family: var(--serif); color: #9c483e; letter-spacing: .25em; }
 [data-verse-theme="ink"] .theme-verse-text { letter-spacing: .09em; }
 [data-verse-theme="cosmos"] .theme-verse-label { color: #9eb0d2; }
-[data-verse-theme="sky"] .theme-verse-text { font-style: italic; }
 @media (max-width: 600px) {
   [data-theme-verse] { padding: 23px 20px 27px; margin-top: 2px; }
   .theme-verse-text { font-size: 22px; }

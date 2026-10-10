@@ -2,7 +2,6 @@
   --paper: #fdfbf6; --bg: var(--paper); --ink: #1c1f26; --mute: #6b6f78; --muted: var(--mute); --line: #e6e0d5; --blue: #1d4ea0; --chip: #fff;
   --accent-ai: #295bbb; --accent-philosophy: #705232; --accent-methods: #237b67; --accent-works: #63518b;
   --lime: var(--blue); --pink: var(--accent-philosophy); --orange: var(--accent-works); --violet: var(--accent-works); --cyan: var(--accent-ai);
-  --serif: "Newsreader", "LXGW WenKai Screen", "Songti SC", serif; --mono: "JetBrains Mono", ui-monospace, monospace;
   font-family: var(--serif); color-scheme: light;
 }
 :root.night { --paper: #0d1220; --ink: #e8ebf2; --mute: #a2adc2; --line: #29364f; --blue: #8fb4ff; --chip: #151c2e; --accent-ai: #8fb4ff; --accent-philosophy: #d7bd8a; --accent-methods: #88cbb7; --accent-works: #bbacf1; color-scheme: dark; }

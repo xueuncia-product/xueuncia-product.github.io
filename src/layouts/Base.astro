@@ -13,8 +13,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? `${title} · 雪豹 Uncia` : '雪豹 Uncia'}</title>
     {description && <meta name="description" content={description} />}
-    <link rel="stylesheet" href={`${base}/fonts/fonts.css`} />
+    <link rel="stylesheet" href={`${base}/fonts/fonts.css?v=themes-20261010`} />
     <link rel="stylesheet" href={`${base}/themes/scenes.css`} />
+    <link rel="stylesheet" href={`${base}/themes/typography.css`} />
     <script is:inline type="module" src={`${base}/themes/scenes.js`}></script>
     <link rel="icon" href={`${base}/leo_sit.webp`} type="image/webp" />
     <script is:inline>

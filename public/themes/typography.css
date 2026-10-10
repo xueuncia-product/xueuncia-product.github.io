@@ -1,0 +1,13 @@
+:root {
+  --theme-font: "Noto Sans SC Variable", sans-serif;
+}
+:root, body {
+  --serif: var(--theme-font);
+  --mono: "JetBrains Mono", var(--theme-font), ui-monospace, monospace;
+}
+:root.cosmos, body.cosmos {
+  --theme-font: "Newsreader", "Noto Serif SC Variable", serif;
+}
+:root.ink, body.ink {
+  --theme-font: "LXGW WenKai Screen", cursive;
+}

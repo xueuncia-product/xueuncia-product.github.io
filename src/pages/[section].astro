@@ -13,31 +13,57 @@ const { s } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = (await getCollection('posts', (p) => !p.data.draft && !p.data.private && p.data.source !== 'sina' && canonicalSection(p.data.section) === s.key))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const cycleVideo = posts.find((p) => p.id === 'jian-zhouqi');
+const articles = s.key === 'works' ? posts.filter((p) => p !== cycleVideo) : posts;
 ---
 <Base title={s.name} description={s.desc} active={s.key}>
   <header class="section-heading"><small>{s.en}</small><h1 style={`--section-color: ${s.color}`}>{s.name}</h1><p>{s.desc}</p></header>
   {s.key === 'works' && (
-    <div class="showcase-list"><a class="showcase-feature" href={`${base}/multi-agent/`}>
-      <span class="eyebrow">流程演示</span><h2>多个 Agent，怎样一起完成一件事？</h2><p>从拆分任务、并行工作，到复核归并。点开角色，看每一步该交付什么。</p><span class="text-link">打开互动展示 →</span>
-    </a>
-    <a class="showcase-feature travel-film-feature" href={`${base}/new-zealand/#films`}><img src={`${base}/media/new-zealand/fjord-original-sound.jpg`} alt="本人拍摄的新西兰峡湾瀑布，旅行原声视频封面" loading="lazy" decoding="async" /><div><span class="eyebrow">旅行影像 · 本人实拍</span><h2>人生不虚此行 · 新西兰</h2><p>两段峡湾瀑布原声短片，留下山海与飞泉。附城市路线、参考图库和行程妙搭。</p><span class="text-link">看旅行视频 →</span></div></a>
-    <a class="showcase-feature" href={`${base}/games/`}><span class="eyebrow">学习与互动</span><h2>旅途中的小游戏</h2><p>南岛知识闯关、德州学习室与思维实验，明确当前访问限制。</p><span class="text-link">看小游戏作品 →</span></a></div>
+    <>
+      <nav class="works-index" aria-label="作品分类"><a href="#videos">视频作品 ↓</a><a href="#interactive">互动作品 ↓</a><a href="#travel-tools">旅行工具 ↓</a>{articles.length > 0 && <a href="#notes">制作手记 ↓</a>}</nav>
+      <section id="videos" class="works-section" aria-labelledby="videos-title">
+        <div class="works-heading"><small>Films &amp; video essays</small><h2 id="videos-title">视频作品</h2><p>视频随笔与旅行影像，在这里单独收藏。</p></div>
+        <div class="video-works">
+          {cycleVideo && <a class="video-work" href={`${base}/p/${cycleVideo.id}/`}><div class="video-cover"><img src={`${base}/media/jian-zhouqi/cover-9x16.jpg`} alt="见周期视频随笔的水墨年轮封面" loading="lazy" decoding="async" /><span>3 分 30 秒</span></div><div class="video-info"><span class="eyebrow">视频随笔 · 见周期</span><h3>{cycleVideo.data.title}</h3><p>从人与行业、产业、历史到人生，思考中年的选择与长期积累。</p><span class="text-link">看视频与随笔 →</span></div></a>}
+          <a class="video-work" href={`${base}/new-zealand/#fjord-original-sound`}><div class="video-cover"><img src={`${base}/media/new-zealand/fjord-original-sound.jpg`} alt="本人拍摄的新西兰峡湾瀑布，峡湾原声视频画面" loading="lazy" decoding="async" /><span>26 秒</span></div><div class="video-info"><span class="eyebrow">旅行影像 · 本人实拍</span><h3>人生不虚此行 · 峡湾原声</h3><p>从远处岩壁到近处飞泉，留下瀑布、风与现场的声音。</p><span class="text-link">看原声短片 →</span></div></a>
+          <a class="video-work" href={`${base}/new-zealand/#waterfall-moments`}><div class="video-cover"><img src={`${base}/media/new-zealand/waterfall-moments.jpg`} alt="本人拍摄的新西兰瀑布近景，万壑飞泉视频画面" loading="lazy" decoding="async" /><span>13 秒</span></div><div class="video-info"><span class="eyebrow">旅行影像 · 本人实拍</span><h3>万壑飞泉 · 此行不虚</h3><p>泛舟峡湾，见千仞壁立、万壑飞泉，听水声如雷。</p><span class="text-link">看原声短片 →</span></div></a>
+        </div>
+      </section>
+      <section id="interactive" class="works-section" aria-labelledby="interactive-title">
+        <div class="works-heading"><small>Interactive works</small><h2 id="interactive-title">互动作品</h2></div>
+        <div class="showcase-list"><a class="showcase-feature" href={`${base}/multi-agent/`}>
+          <span class="eyebrow">流程演示</span><h3>多个 Agent，怎样一起完成一件事？</h3><p>从拆分任务、并行工作，到复核归并。点开角色，看每一步该交付什么。</p><span class="text-link">打开互动展示 →</span>
+        </a>
+        <a class="showcase-feature" href={`${base}/games/`}><span class="eyebrow">学习与互动</span><h3>旅途中的小游戏</h3><p>南岛知识闯关、德州学习室与思维实验，明确当前访问限制。</p><span class="text-link">看小游戏作品 →</span></a></div>
+      </section>
+      <section id="travel-tools" class="works-section" aria-labelledby="travel-tools-title">
+        <div class="works-heading"><small>Travel tools</small><h2 id="travel-tools-title">旅行工具</h2></div>
+        <a class="showcase-feature" href={`${base}/new-zealand/#route`}><span class="eyebrow">新西兰南岛 · 九天自驾计划</span><h3>从一条路线，到一本行程手记</h3><p>城市路线、目的地参考图库与共同行程妙搭，把旅途的准备留在一个地方。</p><span class="text-link">看路线与行程工具 →</span></a>
+      </section>
+    </>
   )}
-  {posts.length === 0 ? (
+  {articles.length === 0 ? (
     s.key !== 'works' && <p class="empty-state">内容正在整理，准备好后会放在这里。</p>
   ) : (
-    <ul class="article-list">
-      {posts.map((p) => (
+    <section id={s.key === 'works' ? 'notes' : undefined} class:list={{ 'works-section': s.key === 'works' }} aria-labelledby={s.key === 'works' ? 'notes-title' : undefined}>
+      {s.key === 'works' && <div class="works-heading"><small>Making notes</small><h2 id="notes-title">制作手记</h2></div>}
+      <ul class="article-list">
+      {articles.map((p) => (
         <li>
           <time datetime={p.data.date.toISOString()}>{p.data.date.toISOString().slice(0, 10)}</time>
           <div><a href={`${base}/p/${p.id}/`}>{p.data.title}</a>{p.data.summary && <p>{p.data.summary}</p>}</div>
         </li>
       ))}
-    </ul>
+      </ul>
+    </section>
   )}
 </Base>
 
 <style>
-  .travel-film-feature { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 26px; align-items: center; }.travel-film-feature > img { display: block; width: 140px; height: 190px; object-fit: cover; border-radius: 10px; }.travel-film-feature h2 { margin-top: 12px; }
-  @media(max-width:600px) { .travel-film-feature { grid-template-columns: 92px minmax(0, 1fr); gap: 18px; }.travel-film-feature > img { width: 92px; height: 154px; }.travel-film-feature h2 { font-size: 21px; }.travel-film-feature p { font-size: 14px; } }
+  .works-index { display: flex; flex-wrap: wrap; gap: 16px 28px; font-size: 15px; }.works-index a { text-decoration: none; }
+  .works-section { margin-top: 56px; scroll-margin-top: 28px; }.works-heading { margin-bottom: 24px; }.works-heading small { font: 11px/1.5 var(--mono); letter-spacing: 2px; text-transform: uppercase; color: var(--mute); }.works-heading h2 { font-size: 29px; font-weight: 600; line-height: 1.5; margin: 10px 0 8px; }.works-heading p { font-size: 16px; line-height: 1.8; color: var(--mute); margin: 0; }
+  .video-works { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }.video-work { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--chip); color: var(--ink); text-decoration: none; }.video-cover { position: relative; aspect-ratio: 4 / 5; background: #071411; }.video-cover img { display: block; width: 100%; height: 100%; object-fit: contain; }.video-cover > span { position: absolute; right: 12px; bottom: 12px; padding: 5px 9px; border-radius: 6px; color: #fff; background: #000b; font-size: 12px; }.video-info { padding: 24px 22px; }.video-info h3 { font-size: 22px; font-weight: 600; line-height: 1.6; margin: 10px 0 12px; }.video-info p { font-size: 15px; line-height: 1.9; color: var(--mute); margin: 0 0 18px; }.video-work:hover h3 { color: var(--blue); }
+  .showcase-list { display: grid; gap: 20px; }.showcase-feature h3 { font-size: 26px; font-weight: 600; line-height: 1.5; margin: 12px 0 8px; }
+  @media(max-width:750px) { .video-works { grid-template-columns: 1fr; }.video-work { display: grid; grid-template-columns: 120px minmax(0, 1fr); }.video-cover { height: 100%; min-height: 213px; aspect-ratio: auto; }.video-cover img { height: 100%; object-fit: contain; }.video-info { padding: 20px; } }
+  @media(max-width:600px) { .works-index { gap: 14px 20px; font-size: 14px; }.works-section { margin-top: 42px; }.works-heading h2 { font-size: 25px; }.works-heading p { font-size: 15px; }.video-work { grid-template-columns: 96px minmax(0, 1fr); }.video-cover { min-height: 171px; }.video-cover > span { right: 5px; bottom: 8px; padding: 4px 6px; font-size: 11px; }.video-info { padding: 18px 16px; }.video-info .eyebrow { letter-spacing: 1px; font-size: 10px; }.video-info h3 { font-size: 20px; margin: 8px 0; }.video-info p { font-size: 14px; margin-bottom: 12px; }.video-info .text-link { font-size: 14px; }.showcase-feature h3 { font-size: 23px; } }
 </style>
