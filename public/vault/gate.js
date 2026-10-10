@@ -1,9 +1,9 @@
 const base = new URL('.', import.meta.url);
 const $ = (selector) => document.querySelector(selector);
-const login = $('.vault-login'), library = $('.vault-library'), reader = $('.vault-reader');
-const password = $('#vault-password'), status = $('.vault-status'), submit = $('[type=submit]');
+const library = $('.vault-library'), reader = $('.vault-reader');
+const status = $('.vault-status'), retry = $('.vault-retry');
 const list = $('.vault-list'), search = $('[type=search]'), year = $('#vault-year'), more = $('.vault-more');
-const categories = $('.vault-categories'), lock = $('.vault-lock'), prose = $('.vault-prose');
+const categories = $('.vault-categories'), prose = $('.vault-prose'), scene = $('[data-theme-scene]');
 let key = null, archive = null, generation = 0, reading = 0, limit = 80;
 let scope = 'featured', category = '', returnFocus = null, returnScroll = 0;
 let requests = new AbortController();
@@ -79,6 +79,9 @@ function paintTheme() {
   document.body.classList.toggle('night', dark);
   document.body.classList.toggle('cosmos', theme === 'cosmos');
   document.body.classList.toggle('ink', theme === 'ink');
+  document.documentElement.classList.toggle('night', dark);
+  document.documentElement.classList.toggle('cosmos', theme === 'cosmos');
+  document.documentElement.classList.toggle('ink', theme === 'ink');
   document.querySelectorAll('[data-theme]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.theme === theme)));
 }
 paintTheme();
@@ -97,16 +100,18 @@ function reset() {
   generation++; reading++; requests.abort(); requests = new AbortController();
   key = null; archive = null; returnFocus = null; returnScroll = 0;
   document.body.classList.remove('reading');
-  login.reset(); login.hidden = false; library.hidden = true; reader.hidden = true; lock.hidden = true;
-  status.textContent = ''; submit.disabled = false; submit.textContent = '解锁';
+  library.hidden = true; reader.hidden = true;
+  status.textContent = ''; retry.hidden = true; retry.disabled = false;
   list.replaceChildren(); categories.replaceChildren(); search.value = '';
   year.replaceChildren(new Option('全部年份', ''));
   $('.vault-count').textContent = ''; $('.vault-results').textContent = '';
   scope = 'featured'; category = ''; limit = 80; clearReader();
+  scene.dataset.sceneKey = 'old-days';
   document.querySelectorAll('[data-scope]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.scope === scope)));
 }
-lock.addEventListener('click', () => { reset(); password.focus(); });
 addEventListener('pagehide', reset);
+addEventListener('pageshow', (event) => { if (event.persisted && !archive) loadArchive(); });
+retry.addEventListener('click', loadArchive);
 
 async function fetchFile(path, type = 'arrayBuffer', signal = requests.signal) {
   const response = await fetch(new URL(path, base), { cache: 'no-store', signal });
@@ -128,21 +133,19 @@ function validPost(post) {
     && (post.metadataOnly === undefined || typeof post.metadataOnly === 'boolean')
     && (post.tags === undefined || (Array.isArray(post.tags) && post.tags.every((tag) => typeof tag === 'string')));
 }
-login.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  if (submit.disabled) return;
+async function loadArchive() {
+  if (retry.disabled) return;
   const session = ++generation;
   requests.abort(); requests = new AbortController(); const signal = requests.signal;
-  const secret = password.value; password.value = '';
-  submit.disabled = true; submit.textContent = '解锁中…'; status.textContent = ''; lock.hidden = false;
+  retry.disabled = true; retry.hidden = true; status.textContent = '正在整理书架…';
   try {
     if (!crypto.subtle) throw new Error('请使用 HTTPS 或本机预览打开归档。');
-    const config = await fetchFile('data/config.json', 'json', signal);
-    if (config.version !== 1 || config.iterations !== 600000 || typeof config.salt !== 'string') throw new Error('归档格式不受支持。');
-    const salt = Uint8Array.from(atob(config.salt), (c) => c.charCodeAt(0));
-    if (salt.length !== 16) throw new Error('归档格式不受支持。');
-    const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), 'PBKDF2', false, ['deriveKey']);
-    const sessionKey = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: config.iterations, hash: 'SHA-256' }, material, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const config = await fetchFile('data/access.json', 'json', signal);
+    if (config.version !== 1 || typeof config.key !== 'string' || !/^[A-Za-z0-9+/]{43}=$/.test(config.key)) throw new Error('归档格式不受支持。');
+    const bytes = Uint8Array.from(atob(config.key), (c) => c.charCodeAt(0));
+    if (bytes.length !== 32) throw new Error('归档格式不受支持。');
+    // The key is public: this file packaging provides no access restriction.
+    const sessionKey = await crypto.subtle.importKey('raw', bytes, { name: 'AES-GCM' }, false, ['decrypt']);
     if (session !== generation) return;
     const decoded = await decrypt('data/directory.bin', sessionKey, signal);
     if (session !== generation) return;
@@ -153,15 +156,15 @@ login.addEventListener('submit', async (event) => {
     for (const value of years) year.add(new Option(value, value));
     const daily = archive.filter((post) => post.category === '日常记录').length;
     $('.vault-count').textContent = `${archive.length.toLocaleString()} 篇记录 · ${archive.filter((post) => post.featured).length.toLocaleString()} 篇精选 · ${daily.toLocaleString()} 篇日常记录`;
-    login.hidden = true; library.hidden = false; limit = 80; renderCategories(); renderList(); search.focus();
+    status.textContent = ''; library.hidden = false; limit = 80; renderCategories(); renderList();
   } catch (error) {
     if (session !== generation || error.name === 'AbortError') return;
-    status.textContent = error.name === 'OperationError' ? '密码不正确，或归档文件已损坏，请重试。' : error.message;
-    lock.hidden = true; password.focus();
+    status.textContent = error.name === 'OperationError' ? '归档文件已损坏，请稍后重试。' : error.message;
+    retry.hidden = false;
   } finally {
-    if (session === generation) { submit.disabled = false; submit.textContent = '解锁'; }
+    if (session === generation) retry.disabled = false;
   }
-});
+}
 
 function scopedPosts() { return scope === 'featured' ? archive.filter((post) => post.featured) : archive; }
 function renderCategories() {
@@ -206,6 +209,7 @@ more.addEventListener('click', () => { limit += 80; renderList(); });
 $('.vault-back').addEventListener('click', () => {
   reading++; reader.hidden = true; library.hidden = false; clearReader();
   document.body.classList.remove('reading');
+  scene.dataset.sceneKey = 'old-days';
   returnFocus?.focus({ preventScroll: true }); window.scrollTo({ top: returnScroll });
 });
 async function openPost(post, button) {
@@ -213,6 +217,7 @@ async function openPost(post, button) {
   returnFocus = button; returnScroll = window.scrollY;
   library.hidden = true; reader.hidden = false; clearReader();
   document.body.classList.add('reading'); window.scrollTo({ top: 0 });
+  scene.dataset.sceneKey = `old-days/${post.file}`;
   $('.vault-reader h2').textContent = post.title;
   $('.vault-meta').textContent = `${post.date} · ${post.category}${post.metadataOnly ? ' · 仅存标题与日期' : ''} · 正在读取…`;
   $('.vault-back').focus();
@@ -226,3 +231,4 @@ async function openPost(post, button) {
     if (session === generation && articleRequest === reading && error.name !== 'AbortError') $('.vault-meta').textContent = '这篇记录暂时无法读取，请返回目录后重试。';
   }
 }
+loadArchive();

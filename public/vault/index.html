@@ -4,27 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'" />
   <title>旧时光 · 雪豹 Uncia</title>
   <link rel="stylesheet" href="/fonts/fonts.css" />
   <link rel="stylesheet" href="./gate.css" />
+  <link rel="stylesheet" href="/themes/scenes.css" />
+  <script type="module" src="/themes/scenes.js"></script>
 </head>
 <body>
+  <div data-theme-scene data-scene-key="old-days" aria-hidden="true"></div>
   <header class="vault-shell vault-topbar">
     <a class="vault-logo" href="/" aria-label="雪豹 Uncia 首页">Uncia</a>
-    <nav class="vault-site-links" aria-label="主导航"><ul><li><a href="/ai-learning/">AI 学习</a></li><li><a href="/philosophy/">哲学</a></li><li><a href="/methods/">工作方法论</a></li><li><a href="/works/">作品展示</a></li><li><a href="/contact/">联系</a></li></ul></nav>
+    <nav class="vault-site-links" aria-label="主导航"><ul><li><a href="/ai-learning/">AI 学习</a></li><li><a href="/philosophy/">哲学</a></li><li><a href="/methods/">工作方法论</a></li><li><a href="/works/">作品展示</a></li><li><a href="/old-days/" aria-current="page">旧时光</a></li><li><a href="/contact/">联系</a></li></ul></nav>
     <div class="vault-actions">
-      <div class="vault-theme" aria-label="页面主题"><button type="button" data-theme="sky" aria-pressed="true">☁ 云端</button><button type="button" data-theme="cosmos" aria-pressed="false">☯ 太极</button><button type="button" data-theme="ink" aria-pressed="false">水墨</button></div>
-      <button type="button" class="vault-lock" hidden>锁定</button>
+      <div class="vault-theme" aria-label="页面主题"><button type="button" data-theme="sky" aria-pressed="true"><span aria-hidden="true">☁</span> 云端</button><button type="button" data-theme="cosmos" aria-pressed="false"><span aria-hidden="true">☯</span> 太极</button><button type="button" data-theme="ink" aria-pressed="false"><svg class="theme-icon" aria-hidden="true" viewBox="0 0 20 20"><path d="m13.5 2 4 4-8.7 8.7-4.6.6.6-4.6Z"/><path d="m11.5 4 4 4M3 17l3-.3"/></svg> 水墨</button></div>
     </div>
   </header>
   <main class="vault-shell vault-main">
-    <header class="vault-heading"><small>UNCIA · ARCHIVE</small><h1>旧时光</h1><p>一些留给自己的文字，慢慢看。</p></header>
-    <form class="vault-login">
-      <label for="vault-password">访问密码</label>
-      <div class="vault-password-row"><input id="vault-password" type="password" autocomplete="off" required maxlength="256" /><button type="submit">解锁</button></div>
-      <p class="vault-status" role="status" aria-live="polite"></p>
-    </form>
+    <aside data-theme-verse></aside>
+    <header class="vault-heading"><small>UNCIA · ARCHIVE</small><h1>旧时光</h1><p>曾经写下的文字，如今公开放在这里，慢慢看。</p></header>
+    <p class="vault-status" role="status" aria-live="polite">正在整理书架…</p><button class="vault-retry" type="button" hidden>重新读取</button>
     <section class="vault-library" aria-label="归档目录" hidden>
       <p class="vault-count"></p>
       <div class="vault-views" aria-label="浏览范围"><button type="button" data-scope="featured" aria-pressed="true">精选文章</button><button type="button" data-scope="all" aria-pressed="false">全部记录</button></div>
@@ -34,7 +33,7 @@
       <ol class="vault-list"></ol><button class="vault-more" type="button" hidden>再看一些</button>
     </section>
     <section class="vault-reader" aria-label="文章阅读" hidden><button class="vault-back" type="button">← 返回目录</button><h2></h2><p class="vault-meta" role="status" aria-live="polite"></p><article class="vault-prose" aria-label="归档正文"></article></section>
-    <noscript><p>请开启浏览器 JavaScript 后解锁归档。</p></noscript>
+    <noscript><p>请开启浏览器 JavaScript 后浏览归档。</p></noscript>
   </main>
   <footer class="vault-shell vault-footer"><span>© 2026 雪豹 Uncia</span><a href="/contact/">微信联系</a></footer>
   <script type="module" src="./gate.js"></script>

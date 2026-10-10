@@ -14,9 +14,32 @@ const publicImage = (url: string) => /^https:\/\/upload\.wikimedia\.org\//.test(
 const publicSource = (url: string) => /^https:\/\/(?:commons\.wikimedia\.org|creativecommons\.org)\//.test(url);
 if (gallery.length < 4 || gallery.length > 6 || gallery.some((photo) => !publicImage(photo.imageUrl) || !publicImage(photo.originalUrl) || !publicSource(photo.sourcePage) || !publicSource(photo.licenseUrl) || !photo.author || !photo.licenseName)) throw new Error('Reference photos need verified public images, credits and licenses.');
 ---
-<Base title="新西兰南岛 · 路线与灵感" description="一份九天南岛自驾计划、行程工具介绍与有署名的目的地参考图库。" active="works">
+<Base title="新西兰南岛 · 影像与行程" description="两段本人拍摄的峡湾瀑布原声视频，九天南岛自驾计划与目的地参考图库。" active="works">
   <header class="section-heading travel-heading"><small>South Island · 2026</small><h1>新西兰南岛</h1><p>一份和朋友一起共创的自驾计划。湖泊、山口、皇后镇、峡湾与西海岸，最后回到基督城。</p><div class="trip-meta"><span>旅行计划</span><time datetime="2026-09-27">9 月 27 日</time><span>—</span><time datetime="2026-10-05">10 月 5 日</time><span>共九天</span></div></header>
-  <nav class="travel-index" aria-label="页面内容"><a href="#route">城市级路线 ↓</a><a href="#gallery">参考图库 ↓</a><a href="#planner">行程工具 ↓</a></nav>
+  <nav class="travel-index" aria-label="页面内容"><a href="#films">旅行影像 ↓</a><a href="#route">城市级路线 ↓</a><a href="#gallery">参考图库 ↓</a><a href="#planner">行程工具 ↓</a></nav>
+
+  <section id="films" class="travel-section" aria-labelledby="films-title">
+    <div class="section-label"><small>Travel films · Original sound</small><h2 id="films-title">人生不虚此行</h2></div>
+    <p class="gallery-intro">山把海抱在怀里，瀑布把寂静撞开。两段本人拍摄的峡湾影像，留下瀑布、风与现场的声音。</p>
+    <div class="travel-films">
+      <figure class="travel-film">
+        <video controls playsinline preload="none" poster="/media/new-zealand/fjord-original-sound.jpg" aria-label="人生不虚此行：26 秒峡湾瀑布原声短片">
+          <source src="/media/new-zealand/fjord-original-sound.mp4" type="video/mp4" />
+          <track kind="subtitles" src="/media/new-zealand/fjord-original-sound.vtt" srclang="zh" label="旅行短句" />
+          <p>浏览器无法播放时可<a href="/media/new-zealand/fjord-original-sound.mp4">打开视频文件</a>。</p>
+        </video>
+        <figcaption><span class="film-meta">26 秒 · 三段实拍 · 原声</span><h3>人生不虚此行 · 峡湾原声</h3><p>从远处岩壁到近处飞泉。柔和叠化、轻度调色与风噪处理，不加配乐。</p></figcaption>
+      </figure>
+      <figure class="travel-film">
+        <video controls playsinline preload="none" poster="/media/new-zealand/waterfall-moments.jpg" aria-label="万壑飞泉：13 秒峡湾瀑布原声近景">
+          <source src="/media/new-zealand/waterfall-moments.mp4" type="video/mp4" />
+          <p>浏览器无法播放时可<a href="/media/new-zealand/waterfall-moments.mp4">打开视频文件</a>。</p>
+        </video>
+        <figcaption><span class="film-meta">13 秒 · 瀑布近景 · 原声</span><h3>万壑飞泉 · 此行不虚</h3><p>泛舟峡湾，见千仞壁立，万壑飞泉。水声如雷，山海入怀，此行不虚。</p></figcaption>
+      </figure>
+    </div>
+    <p class="section-note film-source">本人实拍 · 根据原素材与旧剪辑记录重建。裁去船檐与前景遮挡，封面取自视频画面。</p>
+  </section>
 
   <section id="route" class="travel-section" aria-labelledby="route-title">
     <div class="section-label"><small>Route</small><h2 id="route-title">路线与计划</h2></div>
@@ -26,7 +49,7 @@ if (gallery.length < 4 || gallery.length > 6 || gallery.some((photo) => !publicI
 
   <section id="gallery" class="travel-section" aria-labelledby="gallery-title">
     <div class="section-label"><small>Reference gallery</small><h2 id="gallery-title">目的地灵感</h2></div>
-    <p class="gallery-intro">以下为目的地参考图，非本人实拍，供路线规划与灵感浏览。个人照片与视频尚未加入。</p>
+    <p class="gallery-intro">以下为目的地参考图，非本人实拍，供路线规划与灵感浏览；与上方本人拍摄的视频分别标注。</p>
     <div class="reference-gallery">{gallery.map((photo) => <figure class:list={{ 'gallery-wide': photo.id === 'hooker-valley' || photo.id === 'glenorchy-night', panorama: photo.id === 'glenorchy-night' }}>
       <a class="photo-link" href={photo.imageUrl} target="_blank" rel="nofollow noopener noreferrer"><img src={photo.imageUrl} alt={`${photo.title}，目的地参考图，非本人实拍`} loading="lazy" decoding="async" /><span>参考图 · 非本人实拍</span></a>
       <figcaption><h3>{photo.title}</h3><p>{photo.author} · <a href={photo.licenseUrl} target="_blank" rel="nofollow noopener noreferrer">{photo.licenseName}</a></p><a href={photo.sourcePage} target="_blank" rel="nofollow noopener noreferrer">原始来源 ↗</a></figcaption>
@@ -44,6 +67,7 @@ if (gallery.length < 4 || gallery.length > 6 || gallery.some((photo) => !publicI
 <style>
   .trip-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 24px; color: var(--mute); font-size: 14px; }.trip-meta span:first-child { border: 1px solid var(--line); border-radius: 99px; padding: 6px 11px; color: var(--blue); margin-right: 8px; }
   .travel-index { display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; }.travel-index a { text-decoration: none; }
+  .travel-films { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; max-width: 860px; margin: 32px auto 0; }.travel-film { margin: 0; min-width: 0; }.travel-film video { display: block; width: 100%; max-width: 352px; height: 560px; max-height: 72vh; object-fit: contain; margin: 0 auto; border-radius: 16px; background: #071411; box-shadow: 0 12px 36px #0002; }.travel-film figcaption { padding: 20px 4px 0; }.film-meta { color: var(--blue); font: 11px var(--mono); letter-spacing: 1px; }.travel-film figcaption h3 { margin: 10px 0 9px; font-size: 22px; }.travel-film figcaption p { font-size: 15px; line-height: 1.9; }.film-source { text-align: center; }
   .travel-section { margin-top: 64px; scroll-margin-top: 24px; }.section-label small { font: 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; color: var(--mute); }.section-label h2 { font-size: 29px; font-weight: 600; line-height: 1.5; margin: 10px 0 26px; }
   .route-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; list-style: none; padding: 0; margin: 0; }.route-line li { display: flex; gap: 14px; padding: 20px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--chip); }.route-number { color: var(--blue); font: 12px/2 var(--mono); }.route-line strong { display: block; font-weight: 600; font-size: 17px; line-height: 1.6; }.route-line li div > span { display: block; color: var(--mute); font-size: 13px; line-height: 1.7; margin-top: 5px; }
   .section-note, .gallery-intro { color: var(--mute); font-size: 15px; line-height: 1.8; }.section-note { margin: 18px 0 0; }.gallery-intro { max-width: 720px; margin: -8px 0 24px; }
@@ -53,6 +77,6 @@ if (gallery.length < 4 || gallery.length > 6 || gallery.some((photo) => !publicI
   .planner-section { padding-top: 30px; border-top: 1px solid var(--line); }.planner-intro { max-width: 720px; color: var(--mute); font-size: 17px; line-height: 1.9; margin: -8px 0 26px; }.planner-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }.planner-features b { font-size: 19px; font-weight: 600; }.planner-features p { color: var(--mute); font-size: 15px; line-height: 1.8; margin: 10px 0 0; }
   .planner-link { display: inline-block; margin-top: 26px; padding: 11px 18px; border: 1px solid var(--line); border-radius: 99px; font-size: 15px; text-decoration: none; }
   @media(max-width:850px) { .route-line { grid-template-columns: repeat(2, 1fr); } }
-  @media(max-width:600px) { .travel-section { margin-top: 44px; }.travel-index { gap: 18px; font-size: 14px; }.section-label h2 { font-size: 25px; margin-bottom: 20px; }.route-line { grid-template-columns: 1fr; gap: 10px; }.route-line li { padding: 15px 17px; }.reference-gallery { grid-template-columns: 1fr; gap: 26px; }.planner-features { grid-template-columns: 1fr; gap: 24px; }.gallery-intro, .section-note { font-size: 14px; } }
+  @media(max-width:600px) { .travel-section { margin-top: 44px; }.travel-index { gap: 18px; font-size: 14px; }.section-label h2 { font-size: 25px; margin-bottom: 20px; }.travel-films { grid-template-columns: 1fr; gap: 36px; }.travel-film video { height: auto; max-height: 72vh; }.film-source { text-align: left; }.route-line { grid-template-columns: 1fr; gap: 10px; }.route-line li { padding: 15px 17px; }.reference-gallery { grid-template-columns: 1fr; gap: 26px; }.planner-features { grid-template-columns: 1fr; gap: 24px; }.gallery-intro, .section-note { font-size: 14px; } }
   @media(prefers-reduced-motion:reduce) { .photo-link img { transition: none; }.photo-link:hover img { transform: none; } }
 </style>

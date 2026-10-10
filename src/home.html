@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>雪豹 Uncia</title>
 <link rel="stylesheet" href="/fonts/fonts.css" />
+<link rel="stylesheet" href="/themes/scenes.css" />
 <style>
   :root {
     --paper: #fdfbf6; --ink: #1c1f26; --mute: #6b6f78; --line: #ece6da; --blue: #1d4ea0; --chip: #fff;
@@ -19,8 +20,11 @@
   a { color: inherit; text-decoration: none; }
 
   /* ---------- 天空首屏 ---------- */
-  .hero { position: relative; height: calc(var(--H) + var(--y)); min-height: 520px; overflow: hidden; }
+  .hero { position: relative; z-index: 1; height: calc(var(--H) + var(--y)); min-height: 520px; overflow: hidden; }
   #sky { position: absolute; inset: 0; transition: background 1.2s; }
+  .sky-tech { position: absolute; inset: 0; width: 100%; height: 100%; color: #345f96; opacity: .3; pointer-events: none; }
+  body.night .sky-tech { color: #a9d5ff; opacity: .28; }
+  body.cosmos .sky-tech, body.ink .sky-tech { display: none; }
   #stars { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s; }
   body.night #stars { opacity: 1; }
   .orb { position: absolute; width: 90px; height: 90px; border-radius: 50%; transform: translate(-50%, -50%); transition: all 1.2s; }
@@ -38,12 +42,20 @@
   .drift-b { animation: drift 70s ease-in-out infinite alternate-reverse; }
   @keyframes drift { to { translate: calc(var(--w) * -.035) 0; } }
   .leo { position: absolute; width: 22%; left: 67%; top: 10%; pointer-events: auto; cursor: pointer; transform-origin: 50% 95%; animation: breathe 2.6s ease-in-out infinite; }
-  /* 雪豹演员：两张图交叉淡入 + 3D 跟随鼠标 + 随机动作 */
+  /* 姿态图在同一个落脚点交叉切换，保持猫科行为顺序。 */
   .actor { perspective: 900px; }
   .rig { position: relative; aspect-ratio: 1; transition: transform 1.4s cubic-bezier(.25,.6,.3,1); }
   .rig img { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; transition: opacity .35s; filter: drop-shadow(0 14px 14px rgba(90,100,120,.14)); }
   .rig img.on { opacity: 1; }
-  .rig img { transition: opacity 1.15s ease-in-out; }
+  .rig img { transition: opacity .65s ease-in-out; }
+  .actor { border: 0; padding: 0; background: transparent; color: inherit; }
+  .actor:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; border-radius: 30%; }
+  .actor[data-pose=leo_look] .rig { animation: survey 3.6s ease-in-out infinite; }
+  .actor[data-pose=leo_groom] .rig { animation: groom 1.5s ease-in-out infinite; }
+  .actor[data-pose=leo_stretch] .rig { animation: stretch 2.2s ease-in-out infinite; }
+  @keyframes survey { 50% { transform: rotate(-1.8deg) translateY(-1%); } }
+  @keyframes groom { 50% { transform: rotate(1.1deg) scaleY(.982); } }
+  @keyframes stretch { 50% { transform: scale(1.025, 1.045) translateY(-1%); } }
   .actor::before { content: ''; position: absolute; z-index: -1; left: 22%; bottom: .5%; width: 62%; height: 7%; border-radius: 50%; background: rgba(27,38,54,.23); filter: blur(8px); transition: width 1.2s, left 1.2s; }
   .actor[data-pose=leo_lie]::before { left: 9%; width: 82%; }
   .actor.down .rig { animation: down .8s ease-out; }       /* 趴下：重心下沉 */
@@ -65,9 +77,9 @@
 
   /* ---------- 星空太极主题 ---------- */
   .skyl, .cosmosl { position: absolute; inset: 0; transition: opacity 1.4s; }
-  .cosmosl { opacity: 0; pointer-events: none; }
-  body.cosmos .skyl { opacity: 0; pointer-events: none; }
-  body.cosmos .cosmosl { opacity: 1; }
+  .cosmosl { opacity: 0; visibility: hidden; pointer-events: none; }
+  body.cosmos .skyl { opacity: 0; visibility: hidden; pointer-events: none; }
+  body.cosmos .cosmosl { opacity: 1; visibility: visible; }
   body.cosmos #sky { background: radial-gradient(ellipse at 48% 30%, #13265a 0%, #060b1d 55%, #02030a 100%) !important; }
   .tilt { position: absolute; width: calc(var(--w) * .65); left: calc(var(--x) + var(--w) * .22); top: calc(var(--y) + var(--w) * .02); }
   .disc canvas { display: block; width: 100%; height: calc(var(--w) * .4); }
@@ -80,10 +92,12 @@
   .leo-c .rig { z-index: 1; }
   .inkl { display: none; position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 1.8s; }
   .ink-landscape { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
-  .ink-leopard { position: absolute; z-index: 1; width: 27%; left: 69%; bottom: 5%; }
+  .ink-leopard { position: absolute; z-index: 1; width: 27%; left: 69%; bottom: 5%; border: 0; padding: 0; background: transparent; cursor: pointer; }
   .ink-leopard::before { content: ''; position: absolute; left: 24%; bottom: 3.5%; width: 62%; height: 4%; border-radius: 50%; background: #28272122; filter: blur(4px); }
-  .ink-leopard img { display: block; position: relative; width: 100%; transform-origin: 50% 94.5%; animation: ink-breathe 8s ease-in-out infinite; }
-  @keyframes ink-breathe { 50% { transform: scale(1.003, 1.005); } }
+  .ink-leopard .rig { aspect-ratio: 1; }
+  .ink-leopard .rig img { filter: none; transform-origin: 50% 96%; animation: ink-breathe 3s ease-in-out infinite; }
+  .ink-leopard[data-pose=ink_groom] .rig { animation: groom 1.6s ease-in-out infinite; }
+  @keyframes ink-breathe { 50% { transform: scale(1.012, 1.02); } }
   body.ink .skyl, body.ink .cosmosl, body.ink #sky, body.ink #stars { opacity: 0; visibility: hidden; pointer-events: none; }
   body.ink .inkl { display: block; opacity: 1; visibility: visible; }
   body.ink .seg { background: #fbf7efed; border-color: var(--line); }
@@ -95,13 +109,14 @@
   body.ink .art svg { opacity: .35; }
   body.ink .float span { background: transparent url(/ink/leopard.png) 50% 20% / 190% no-repeat; }
   .seg { display: flex; background: rgba(255,255,255,.92); border: 1px solid rgba(0,0,0,.06); border-radius: 99px; padding: 3px; box-shadow: 0 2px 10px rgba(30,60,110,.08); }
-  .seg button { border: 0; background: none; border-radius: 99px; padding: 5px 12px; font: 14px var(--serif); color: #38404e; cursor: pointer; }
+  .seg button { border: 0; background: none; border-radius: 99px; padding: 5px 12px; font: 14px var(--serif); color: #38404e; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .seg svg { width: 15px; height: 15px; }
   .seg button.on { background: #1f2229; color: #fff; }
 
   nav { position: absolute; z-index: 5; top: 0; left: 0; right: 0; max-width: 1024px; margin: 0 auto; padding: 22px 0; display: flex; align-items: center; gap: 30px; }
   .logo { font: 44px/1 "Pinyon Script", cursive; color: var(--blue); position: relative; margin-right: auto; padding: 0 6px 8px 0; }
   .logo svg { position: absolute; left: 0; bottom: -2px; width: 100%; height: 14px; }
-  nav .links { display: flex; gap: 26px; font-size: 16px; color: #38404e; }
+  nav .links { display: flex; gap: 20px; font-size: 16px; color: #38404e; }
   nav .links a:hover { color: var(--blue); }
   .pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.92); border: 1px solid rgba(0,0,0,.06); border-radius: 99px; padding: 7px 10px 7px 14px; font-size: 14px; color: #38404e; box-shadow: 0 2px 10px rgba(30,60,110,.08); }
   .pill kbd { font: 11px var(--mono); border: 1px solid #ddd; border-radius: 6px; padding: 1px 6px; color: #666; }
@@ -121,7 +136,7 @@
   body.night .btn.ghost { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); color: #eef; }
 
   /* ---------- 下半页 ---------- */
-  .wrap { max-width: 1024px; margin: 0 auto; padding: 36px 0 120px; display: grid; grid-template-columns: 1fr 260px; gap: 72px; }
+  .wrap { position: relative; z-index: 1; max-width: 1024px; margin: 0 auto; padding: 36px 0 120px; display: grid; grid-template-columns: 1fr 260px; gap: 72px; }
   h2 { font: 700 25px/1 var(--serif); margin: 0 0 26px; display: flex; align-items: baseline; gap: 14px; }
   h2 a { font: 400 17px var(--serif); color: var(--blue); border-bottom: 1px solid currentColor; }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -152,15 +167,17 @@
   .else small { grid-column: 2; font: 12px var(--mono); color: var(--mute); margin-top: 3px; }
   .float { position: fixed; right: 26px; bottom: 26px; z-index: 9; display: flex; align-items: center; gap: 8px; background: var(--chip); border: 1px solid var(--line); border-radius: 99px; padding: 5px 16px 5px 5px; font-weight: 600; box-shadow: 0 10px 30px rgba(20,30,60,.12); }
   .float span { width: 34px; height: 34px; border-radius: 50%; background: #e9f1fb url(leo_sit.webp) 45% 6% / 230% no-repeat; }
-  .site-footer { max-width: 1024px; margin: 0 auto; padding: 20px 0 40px; border-top: 1px solid var(--line); color: var(--mute); font-size: 12px; }
+  .site-footer { position: relative; z-index: 1; max-width: 1024px; margin: 0 auto; padding: 20px 0 40px; border-top: 1px solid var(--line); color: var(--mute); font-size: 12px; }
   .site-footer a { font-size: 14px; color: var(--blue); }
 
   @media (max-width: 1100px) { nav, .intro, .wrap, .site-footer { margin: 0 32px; } }
   @media (max-width: 700px) {
     :root { --w: 230vw; --x: -117vw; --y: 150px; }
-    nav { padding: 16px 0; gap: 12px; margin: 0 20px; } nav .links, .pill { display: none; } .logo { font-size: 36px; }
+    nav { padding: 16px 0; gap: 12px; margin: 0 20px; flex-wrap: wrap; } .pill { display: none; } .logo { font-size: 36px; }
+    nav .links { order: 3; width: 100%; justify-content: space-between; gap: 8px; font-size: 13px; }
+    .seg button { padding: 5px 8px; font-size: 13px; }
     .orb { margin-top: 150px; }
-    .intro { margin: 0 20px; top: 92px; } .intro .role { font-size: 17px; }
+    .intro { margin: 0 20px; top: 120px; } .intro .role { font-size: 17px; }
     .wrap { grid-template-columns: 1fr; margin: 0 20px; gap: 48px; } .cards { grid-template-columns: 1fr; }
     .ink-landscape { width: 180%; left: -80%; object-position: right bottom; }
     .ink-leopard { width: 52%; left: 45%; bottom: 7%; }
@@ -168,12 +185,14 @@
   @media (prefers-reduced-motion: reduce) {
     .leo, .leo-c, .drift-a, .drift-b, .halo { animation: none !important; }
     .rig img, body, #sky, #stars, .skyl, .cosmosl { transition: none; }
+    .actor .rig, .ink-leopard .rig, .ink-leopard .rig img { animation: none !important; }
     body.ink *, body.ink *::before, body.ink *::after { animation: none !important; transition: none !important; }
     body.ink .card:hover, body.ink .btn:hover { transform: none; }
   }
 </style>
 </head>
 <body>
+<div data-theme-scene data-scene-key="home" aria-hidden="true"></div>
 <section class="hero" id="hero">
   <div id="sky"></div>
   <canvas id="stars"></canvas>
@@ -182,27 +201,28 @@
   <img class="layer far drift-b" src="clouds_a.webp" alt="" data-p="6" />
   <img class="layer back drift-a" src="clouds_a.webp" alt="" data-p="12" />
   <div class="layer front" data-p="22">
-    <div class="leo actor" id="leo">
+    <button type="button" class="leo actor" id="leo" aria-label="和雪豹打招呼">
       <div class="rig"><img class="on" src="leo_sit.webp" alt="一只坐在云上的 3D 雪豹" /><img alt="" /></div>
-      <div class="glow"></div>
-      <div class="bubble" id="bubble"></div>
-    </div>
+      <span class="glow" aria-hidden="true"></span>
+      <span class="bubble" id="bubble"></span>
+    </button>
     <img class="cl" src="clouds_b.webp" alt="" />
   </div>
   </div>
+  <svg class="sky-tech" viewBox="0 0 1440 660" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width=".8"><path d="M360 0v80l72 72h290l72-72h260M1440 160h-150l-64 64h-95M65 0v150l70 70h170"/><circle cx="995" cy="104" r="35"/><circle cx="995" cy="104" r="52" stroke-dasharray="2 12"/></g><g fill="currentColor"><circle cx="305" cy="220" r="3"/><circle cx="1131" cy="224" r="3"/></g></svg>
   <div class="cosmosl">
     <div class="halo"></div>
     <div class="tilt"><div class="disc"><canvas id="gal"></canvas></div></div>
     <img class="ridge" src="ridge.webp" alt="" />
-    <div class="leo-c actor" id="leoC"><div class="rig"><img class="on" src="leo_sit.webp" alt="仰望星空太极的小雪豹" /><img alt="" /></div></div>
+    <button type="button" class="leo-c actor" id="leoC" aria-label="和雪豹打招呼"><div class="rig"><img class="on" src="leo_sit.webp" alt="仰望星空太极的小雪豹" /><img alt="" /></div></button>
   </div>
-  <div class="inkl"><img class="ink-landscape" src="/ink/landscape.png" alt="" loading="lazy" decoding="async" /><div class="ink-leopard"><img src="/ink/leopard.png" alt="坐在水墨山水岸边的小雪豹" loading="lazy" decoding="async" /></div></div>
+  <div class="inkl"><img class="ink-landscape" src="/ink/landscape.png" alt="" loading="lazy" decoding="async" /><button type="button" class="ink-leopard" id="leoInk" aria-label="和水墨雪豹打招呼"><div class="rig"><img class="on" src="/ink/leopard.png" alt="坐在水墨山水岸边的小雪豹" /><img alt="" /></div></button></div>
   <div class="fade"></div>
 
   <nav>
     <a class="logo" href="/">Uncia<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 9 C 60 2, 120 14, 198 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
-    <div class="links"><a href="/ai-learning/">AI 学习</a><a href="/philosophy/">哲学</a><a href="/methods/">工作方法论</a><a href="/works/">作品展示</a></div>
-    <div class="seg" id="seg"><button type="button" data-th="sky" aria-pressed="true" title="云端 · 跟着北京时间">☁ 云端</button><button type="button" data-th="cosmos" aria-pressed="false" title="星空太极">☯ 太极</button><button type="button" data-th="ink" aria-pressed="false" title="水墨山水">水墨</button></div>
+    <div class="links"><a href="/ai-learning/">AI 学习</a><a href="/philosophy/">哲学</a><a href="/methods/">工作方法论</a><a href="/works/">作品展示</a><a href="/old-days/">旧时光</a></div>
+    <div class="seg" id="seg"><button type="button" data-th="sky" aria-pressed="true" title="云端 · 跟着北京时间">☁ 云端</button><button type="button" data-th="cosmos" aria-pressed="false" title="星空太极">☯ 太极</button><button type="button" data-th="ink" aria-pressed="false" title="水墨山水"><svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="m13.5 2 4 4-8.7 8.7-4.6.6.6-4.6Z"/><path d="m11.5 4 4 4M3 17l3-.3"/></svg>水墨</button></div>
   </nav>
 
   <div class="intro">
@@ -210,6 +230,7 @@
     <div class="cta"><a class="btn dark" href="/works/">看作品 →</a><a class="btn ghost" href="/ai-learning/">读文章</a></div>
   </div>
 </section>
+<aside data-theme-verse></aside>
 
 <div class="wrap">
   <main>
@@ -234,7 +255,7 @@
     <div class="posts">
       <h2>做出来的东西 <a href="/works/">作品展示 →</a></h2>
       <a class="post" href="/multi-agent/"><time>协作演示</time><div><b>一个主 Agent，几条并行路径</b><span>点击角色看分工、交付物与证据，模型和架构按官方资料更新。</span></div></a>
-      <a class="post" href="/new-zealand/"><time>路线与灵感</time><div><b>新西兰：把行程做成一本手记</b><span>城市路线、带出处的目的地参考图，以及行程妙搭。</span></div></a>
+      <a class="post" href="/new-zealand/#films"><time>旅行影像</time><div><b>人生不虚此行 · 新西兰</b><span>两段峡湾瀑布原声短片，附城市路线、参考图库和行程妙搭。</span></div></a>
       <a class="post" href="/games/"><time>小游戏</time><div><b>飞行之前，做几个小游戏</b><span>南岛知识闯关、德州学习与思维练习，逐一注明访问和离线限制。</span></div></a>
       <a class="post" href="/p/skill-six-step-method/"><time>学习方法</time><div><b>拆一个 Skill，不止看它装了什么</b><span>从交付、动作、顺序、分工、约束和原则，拆出可复用的方法。</span></div></a>
     </div>
@@ -249,7 +270,7 @@
     </div>
   </aside>
 </div>
-<footer class="site-footer">© 2026 雪豹 Uncia · <a href="/old-days/">旧时光</a></footer>
+<footer class="site-footer">© 2026 雪豹 Uncia</footer>
 <a class="float" href="/contact/"><span></span>找我</a>
 
 <script>
@@ -308,16 +329,17 @@
 
   // ---- 雪豹保持同一个落脚点，按巡视、整理毛发、休息的顺序行动 ----
   const SEQUENCE = ['leo_sit', 'leo_look', 'leo_groom', 'leo_yawn', 'leo_lie', 'leo_stretch'];
-  const DWELL = { leo_sit: 26000, leo_look: 8500, leo_groom: 11000, leo_yawn: 5500, leo_lie: 42000, leo_stretch: 7000 };
+  const DWELL = { leo_sit: 3200, leo_look: 4200, leo_groom: 5000, leo_yawn: 3000, leo_lie: 8000, leo_stretch: 3500 };
   const images = new Map(SEQUENCE.map(name => { const image = new Image(); image.src = name + '.webp'; return [name, image]; }));
   const leo = document.getElementById('leo'), leoC = document.getElementById('leoC');
+  const leoInk = document.getElementById('leoInk');
+  const inkImages = new Map(['ink_sit', 'ink_groom'].map((name, index) => { const image = new Image(); image.src = index ? '/ink/leopard-groom.png' : '/ink/leopard.png'; return [name, image]; }));
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const activeScene = () => theme === 'ink' ? 'ink' : theme === 'cosmos' ? 'cosmos' : (hour < 5.5 || hour >= 19.5) ? 'night' : 'day';
   let scene = activeScene(), poseIndex = 0, timer, transition = 0;
   async function showPose(name) {
-    if (scene === 'ink') return;
-    const version = ++transition, el = scene === 'cosmos' ? leoC : leo;
-    const image = images.get(name);
+    const version = ++transition, el = scene === 'ink' ? leoInk : scene === 'cosmos' ? leoC : leo;
+    const image = scene === 'ink' ? inkImages.get(name) : images.get(name);
     try { await image.decode(); } catch { return; }
     if (version !== transition) return;
     const rig = el.querySelector('.rig'), current = rig.querySelector('img.on');
@@ -327,15 +349,20 @@
     next.src = image.src; next.classList.add('on'); current.classList.remove('on');
   }
   function nextPose(index) {
-    clearTimeout(timer); poseIndex = index;
-    if (scene === 'ink') { transition++; return; }
-    showPose(SEQUENCE[index]);
-    if (!reducedMotion.matches) timer = setTimeout(() => nextPose((index + 1) % SEQUENCE.length), DWELL[SEQUENCE[index]]);
+    clearTimeout(timer); poseIndex = index % SEQUENCE.length;
+    if (scene === 'ink') {
+      poseIndex = index % 2;
+      showPose(poseIndex ? 'ink_groom' : 'ink_sit');
+      if (!reducedMotion.matches) timer = setTimeout(() => nextPose(poseIndex + 1), poseIndex ? 4200 : 3200);
+      return;
+    }
+    showPose(SEQUENCE[poseIndex]);
+    if (!reducedMotion.matches) timer = setTimeout(() => nextPose(poseIndex + 1), DWELL[SEQUENCE[poseIndex]]);
   }
   nextPose(0);
   function syncActorScene() { const next = activeScene(); if (next !== scene) { scene = next; nextPose(0); } }
   setInterval(syncActorScene, 1000);
-  [leo, leoC].forEach(el => el.onclick = () => { if (!reducedMotion.matches && poseIndex !== 1) nextPose(1); });
+  [leo, leoC, leoInk].forEach(el => el.onclick = () => { if (!reducedMotion.matches) nextPose(poseIndex + 1); });
   reducedMotion.addEventListener('change', () => nextPose(0));
 
   // ---- 鼠标视差 ----
@@ -356,6 +383,7 @@
     svg.setAttribute('viewBox', '0 0 360 184'); svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); svg.innerHTML = s;
   });
 </script>
+<script type="module" src="/themes/scenes.js"></script>
 <script type="module">
   import { mountStarfield } from '/starfield.js';
   mountStarfield(document.getElementById('gal'));

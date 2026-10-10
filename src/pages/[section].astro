@@ -20,7 +20,7 @@ const posts = (await getCollection('posts', (p) => !p.data.draft && !p.data.priv
     <div class="showcase-list"><a class="showcase-feature" href={`${base}/multi-agent/`}>
       <span class="eyebrow">流程演示</span><h2>多个 Agent，怎样一起完成一件事？</h2><p>从拆分任务、并行工作，到复核归并。点开角色，看每一步该交付什么。</p><span class="text-link">打开互动展示 →</span>
     </a>
-    <a class="showcase-feature" href={`${base}/new-zealand/`}><span class="eyebrow">路线与灵感</span><h2>新西兰行程手记</h2><p>九天城市路线、带出处的目的地参考图，以及行程妙搭。</p><span class="text-link">打开旅行板块 →</span></a>
+    <a class="showcase-feature travel-film-feature" href={`${base}/new-zealand/#films`}><img src={`${base}/media/new-zealand/fjord-original-sound.jpg`} alt="本人拍摄的新西兰峡湾瀑布，旅行原声视频封面" loading="lazy" decoding="async" /><div><span class="eyebrow">旅行影像 · 本人实拍</span><h2>人生不虚此行 · 新西兰</h2><p>两段峡湾瀑布原声短片，留下山海与飞泉。附城市路线、参考图库和行程妙搭。</p><span class="text-link">看旅行视频 →</span></div></a>
     <a class="showcase-feature" href={`${base}/games/`}><span class="eyebrow">学习与互动</span><h2>旅途中的小游戏</h2><p>南岛知识闯关、德州学习室与思维实验，明确当前访问限制。</p><span class="text-link">看小游戏作品 →</span></a></div>
   )}
   {posts.length === 0 ? (
@@ -36,3 +36,8 @@ const posts = (await getCollection('posts', (p) => !p.data.draft && !p.data.priv
     </ul>
   )}
 </Base>
+
+<style>
+  .travel-film-feature { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 26px; align-items: center; }.travel-film-feature > img { display: block; width: 140px; height: 190px; object-fit: cover; border-radius: 10px; }.travel-film-feature h2 { margin-top: 12px; }
+  @media(max-width:600px) { .travel-film-feature { grid-template-columns: 92px minmax(0, 1fr); gap: 18px; }.travel-film-feature > img { width: 92px; height: 154px; }.travel-film-feature h2 { font-size: 21px; }.travel-film-feature p { font-size: 14px; } }
+</style>

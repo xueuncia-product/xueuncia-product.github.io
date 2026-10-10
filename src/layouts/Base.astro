@@ -3,7 +3,7 @@ import '../styles/global.css';
 import { SECTIONS } from '../sections';
 
 interface Props { title?: string; description?: string; active?: string; privateEntry?: boolean }
-const { title, description, active, privateEntry = false } = Astro.props;
+const { title, description, active } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <!doctype html>
@@ -14,6 +14,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <title>{title ? `${title} · 雪豹 Uncia` : '雪豹 Uncia'}</title>
     {description && <meta name="description" content={description} />}
     <link rel="stylesheet" href={`${base}/fonts/fonts.css`} />
+    <link rel="stylesheet" href={`${base}/themes/scenes.css`} />
+    <script is:inline type="module" src={`${base}/themes/scenes.js`}></script>
     <link rel="icon" href={`${base}/leo_sit.webp`} type="image/webp" />
     <script is:inline>
       (() => {
@@ -44,19 +46,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </script>
   </head>
   <body>
+    <div data-theme-scene aria-hidden="true"></div>
     <header class="wrap nav">
       <a class="logo" href={`${base}/`} aria-label="雪豹 Uncia 首页">Uncia</a>
       <nav class="site-links" aria-label="主导航"><ul>
         {SECTIONS.map((s) => (
           <li><a href={`${base}/${s.key}/`} aria-current={active === s.key ? 'page' : undefined}>{s.name}</a></li>
         ))}
+        <li><a href={`${base}/old-days/`}>旧时光</a></li>
         <li><a href={`${base}/contact/`} aria-current={active === 'contact' ? 'page' : undefined}>联系</a></li>
       </ul></nav>
-      <div class="theme-switch" aria-label="页面主题"><button type="button" data-theme-choice="sky" aria-pressed="true">☁ 云端</button><button type="button" data-theme-choice="cosmos" aria-pressed="false">☯ 太极</button><button type="button" data-theme-choice="ink" aria-pressed="false">水墨</button></div>
+      <div class="theme-switch" aria-label="页面主题"><button type="button" data-theme-choice="sky" aria-pressed="true">☁ 云端</button><button type="button" data-theme-choice="cosmos" aria-pressed="false">☯ 太极</button><button type="button" data-theme-choice="ink" aria-pressed="false"><svg class="theme-icon" aria-hidden="true" viewBox="0 0 20 20"><path d="m13.5 2 4 4-8.7 8.7-4.6.6.6-4.6Z"/><path d="m11.5 4 4 4M3 17l3-.3"/></svg> 水墨</button></div>
     </header>
+    <aside data-theme-verse></aside>
     <main class="wrap"><slot /></main>
     <footer class="wrap footer">
-      <span>© {new Date().getFullYear()} 雪豹 Uncia {privateEntry && <a href={`${base}/old-days/`}>旧时光</a>}</span>
+      <span>© {new Date().getFullYear()} 雪豹 Uncia</span>
       <a href={`${base}/contact/`}>微信联系</a>
     </footer>
   </body>
