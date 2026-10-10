@@ -56,6 +56,9 @@ function sanitizeArticle(html) {
       if (!node.getAttribute('href').startsWith('#')) element.setAttribute('target', '_blank');
     }
     if (tag === 'img') {
+      element.addEventListener('load', () => {
+        if (element.naturalWidth <= 32 && element.naturalHeight <= 32) element.classList.add('vault-emote');
+      }, { once: true });
       element.setAttribute('src', imageSource);
       element.setAttribute('alt', node.getAttribute('alt') || '');
       element.setAttribute('loading', 'lazy'); element.setAttribute('decoding', 'async');

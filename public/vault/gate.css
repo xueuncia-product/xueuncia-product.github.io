@@ -67,6 +67,7 @@ input, select { min-width: 0; width: 100%; padding: 11px 12px; border: 1px solid
 .vault-prose h1, .vault-prose h2, .vault-prose h3, .vault-prose h4, .vault-prose h5, .vault-prose h6 { font-weight: 600; line-height: 1.6; letter-spacing: 0; margin: 1.8em 0 .7em; }
 .vault-prose h1 { font-size: 32px; }.vault-prose h2 { font-size: 28px; }.vault-prose h3 { font-size: 23px; }
 .vault-prose img { display: block; max-width: 100%; height: auto; border-radius: 10px; margin: 28px auto; }
+.vault-prose img.vault-emote { display: inline-block; max-width: 2em; margin: 0 .08em; border-radius: 0; vertical-align: -.15em; }
 .vault-prose a { text-decoration: underline; text-underline-offset: 4px; }
 .vault-prose ul, .vault-prose ol { padding-left: 1.5em; margin: 0 0 1.35em; }.vault-prose li { margin: .4em 0; }
 .vault-prose code { background: var(--chip); padding: 2px 6px; border-radius: 4px; font: .84em "JetBrains Mono", ui-monospace, monospace; }
