@@ -44,6 +44,12 @@ tags: [需求管理, 产品方法, 决策机制]
 
 > 一艘能划过去的小船。
 
+<figure class="fig">
+  <div class="fig-grid" style="--min:150px"><div class="fig-card"><small>1 · 客户说明的需求</small><b>一小截架在小溪上的木板</b><small>“想去河对面买包烟”</small></div><div class="fig-card"><small>2 · 业务理解的需求</small><b>五层豪华游轮</b><small>“客户要开启环球远航征程！”</small></div><div class="fig-card"><small>3 · 产品规划的需求</small><b>航空母舰</b><small>“必须打造全地形水陆两栖生态闭环！”</small></div><div class="fig-card"><small>4 · 架构师设计的方案</small><b>蒸汽朋克巨构</b><small>“支持每秒百万级并发过河”</small></div><div class="fig-card"><small>5 · 项目经理拆解的计划</small><b>甘特图与 50 个里程碑</b><small>“预计三年交付，分五期迭代实施”</small></div><div class="fig-card"><small>6 · 研发最终写出的代码</small><b>绑着电风扇的破木板</b><small>“先硬编码跑起来再说”</small></div><div class="fig-card"><small>7 · 测试通过的上线标准</small><b>放在陆地上的破木板</b><small>“只要不放在水里，功能完全正常”</small></div><div class="fig-card is-acc"><small>客户真正需要的</small><b>一艘简单的小舟</b><small>“一艘能划过去的小船”</small></div></div>
+  <p class="fig-note">每个角色都在用自己的专业语言继续加码，却没有反复确认客户到底想解决什么问题</p>
+  <figcaption>需求失真链路：每传一次，就加一层码</figcaption>
+</figure>
+
 ## 每个人都很专业，需求却死了
 
 需求失真往往不是因为某一个人不专业，而是因为每个角色都在用自己的专业语言继续加码，却没有反复确认客户到底想解决什么问题。
@@ -51,6 +57,17 @@ tags: [需求管理, 产品方法, 决策机制]
 ## 几条随手记
 
 下面四条来自我平时记的观点，和“需求怎么失真”是同一类问题：信息在传递和沉淀的过程中，最关键的那部分最容易丢。
+
+<figure class="fig">
+  <p class="fig-h">信息在传递和沉淀中最容易丢的部分 → 对策</p>
+  <div class="fig-grid" style="--min:200px">
+    <div class="fig-card"><small>丢掉的是“问题”</small><b>先问“这周最烦的重复劳动是什么”</b><small>任务是被分配的，问题要自己发现</small></div>
+    <div class="fig-card"><small>丢掉的是“为什么排除了 B”</small><b>决策三行：选 A · 排除 B / C · 失效条件</b><small>排除理由不成立时，重新讨论</small></div>
+    <div class="fig-card"><small>丢掉的是判定的公正</small><b>看数字之前先写死判定线</b><small>假设 · 口径 · 三档判定线 · 已知干扰</small></div>
+    <div class="fig-card"><small>丢掉的是质疑</small><b>让零上下文的会话第一次看它</b><small>新人的傻问题能穿透背景化</small></div>
+  </div>
+  <figcaption>四条随手记：失真点与对策</figcaption>
+</figure>
 
 ### 只有任务，没有问题
 

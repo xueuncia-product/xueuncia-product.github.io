@@ -31,7 +31,30 @@ PRD 是给谁看的？是只给研发看的吗？
 
 所以 PRD 不能只写“做什么”，还要写清为什么这么设计、当时放弃了什么方案。方案设计这一节，先回答的就是：为什么要这么做，而不是那么做。
 
+<figure class="fig">
+  <p class="fig-h">产研团队 · 各自从 PRD 里拿的东西</p>
+  <div class="fig-rows" style="--cols:1"><span class="is-head">读者</span><span class="is-head">从 PRD 里拿什么</span><b>设计交互</b><span data-k="从 PRD 里拿什么">用户交互的边界和约束，明确框架</span><b>前端</b><span data-k="从 PRD 里拿什么">页面交互处理、字段映射逻辑、页面和状态切换、组件复用</span><b>后端</b><span data-k="从 PRD 里拿什么">功能实现的准绳：数据库表结构、系统领域模型、接口参数定义</span><b>质量</b><span data-k="从 PRD 里拿什么">编写测试用例的唯一依据，没有 PRD 就无法定义什么是“BUG”</span><b>后任产品</b><span data-k="从 PRD 里拿什么">设计初衷（为什么这么设计）与历史记录（当时放弃了什么方案）</span></div>
+  <p class="fig-h">产研之外</p>
+  <div class="fig-grid" style="--min:150px">
+    <div class="fig-card"><b>业务团队</b><small>业务、运营、BI、培训</small></div>
+    <div class="fig-card"><b>职能团队</b><small>财务和税务、审计、法务、风控合规与隐私、安全、客服、市场与公关</small></div>
+    <div class="fig-card"><b>AI</b><small>PRD 是重要的知识库资产来源</small></div>
+    <div class="fig-card"><b>晋升评委</b></div>
+  </div>
+  <p class="fig-note">所以 PRD 不能只写“做什么”，还要写清为什么这么设计、当时放弃了什么方案</p>
+  <figcaption>PRD 的读者与关注点</figcaption>
+</figure>
+
 ## 三条书写原则
+
+<figure class="fig">
+  <div class="fig-grid" style="--min:200px">
+    <div class="fig-card"><small>逻辑性 · 方向和目标是正确的</small><b>发现 → 定义 → 解决 → 验证</b><small>回答 Why Do、Why Now、Do What</small></div>
+    <div class="fig-card"><small>完整性 · 实现路径明确且全局最优</small><b>线：正向 · 逆向 · 横向</b><b>面：本产品域 · 本公司 · 竞品</b></div>
+    <div class="fig-card"><small>结构性 · 团队协作的沟通效率</small><b>图 ＞ 表 ＞ 文字 ＞ 口头解释</b><small>不同读者在固定位置找到自己要的东西</small></div>
+  </div>
+  <figcaption>三条书写原则</figcaption>
+</figure>
 
 ### 逻辑性：方向和目标是正确的
 

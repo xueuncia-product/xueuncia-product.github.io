@@ -10,6 +10,25 @@ tags: [产品方法, 以终为始, 文档, PRD, 反者道之动]
 
 这篇文章改写自我在 2026 年 4 月 17 日写的一份工作随笔《道与术》，于 2026 年 10 月 10 日整理为公开版。原稿分“道篇”和“术篇”，这里只保留“道篇”里的通用思考；针对具体组织的制度建议、内部案例和截图都已删去。
 
+<figure class="fig">
+  <p class="fig-h">道 · 怎么想</p>
+  <div class="fig-grid" style="--min:190px">
+    <div class="fig-card is-acc"><b>以终为始</b><small>功夫在平时，交接与晋升材料都不该临时包装</small></div>
+    <div class="fig-card is-acc"><b>反者道之动</b><small>先想如果要作弊会怎么做，在最顺的时候先想最坏的情况</small></div>
+    <div class="fig-card is-acc"><b>首问负责制</b><small>客户找到你，你就是问题的第一责任人</small></div>
+    <div class="fig-card is-acc"><b>优秀应该被看见</b><small>标准可见，所有人才有明确的衡量标杆</small></div>
+    <div class="fig-card is-acc"><b>产品原则</b><small>把复杂留给自己，把简单留给用户</small></div>
+  </div>
+  <p class="fig-h">术 · 落到文档</p>
+  <div class="fig-grid" style="--min:190px">
+    <div class="fig-card"><b>文档的标准</b><small>无声使用；是证明题，不是完形填空</small></div>
+    <div class="fig-card"><b>文档为什么重要</b><small>公司资产、AI 语料、协同工具、学习材料</small></div>
+    <div class="fig-card"><b>规范文档</b><small>提升整体文档水平的下限，让业务逻辑得以传承</small></div>
+    <div class="fig-card"><b>PRD 是给谁看的</b><small>不只研发，PRD 是产品经理的资产</small></div>
+  </div>
+  <figcaption>几条指导思想：上层是思考方式，下层落到文档</figcaption>
+</figure>
+
 ## 以终为始
 
 产品经理的离职交接文档，不应该是离职前重新整理自己的历史工作文档，而是在日常工作中就对文档进行分类、定期更新维护。
@@ -116,3 +135,8 @@ PRD 是只给研发看的吗？不是。
 
 - **初级：** “因为业务方提了。”
 - **高级：** “以终为始”。因为通过对竞品和历史数据的分析，这是解决当前核心问题的最优路径，并且方案在架构上为未来的业务扩张预留了接口。
+
+<figure class="fig">
+  <div class="fig-rows"><span class="is-head"></span><span class="is-head">初级 · 做需求</span><span class="is-head">中级 · 做功能</span><span class="is-head">高级 · 做产品</span><b>关注</b><span data-k="初级 · 做需求">“点”：被动接受指令，只管搬砖</span><span data-k="中级 · 做功能">“线”：主动梳理路径，追求落地与复用</span><span data-k="高级 · 做产品">“面”：定义问题本质，追求全局最优</span><b>历史问题</b><span data-k="初级 · 做需求">“原来的逻辑不是我设计的”</span><span data-k="中级 · 做功能">—</span><span data-k="高级 · 做产品">深挖历史设计原因，不在烂泥地上盖大厦</span><b>三向思考</b><span data-k="初级 · 做需求">正向：要做清退，就做清退流程</span><span data-k="中级 · 做功能">逆向：清退失败或要恢复怎么办</span><span data-k="高级 · 做产品">横向：对其他业务域的连锁反应</span><b>为什么</b><span data-k="初级 · 做需求">“因为业务方提了”</span><span data-k="中级 · 做功能">—</span><span data-k="高级 · 做产品">以终为始：解决核心问题的最优路径</span></div>
+  <figcaption>产品经理的三个层次</figcaption>
+</figure>

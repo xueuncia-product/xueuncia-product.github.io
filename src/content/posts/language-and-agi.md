@@ -10,6 +10,19 @@ tags: [哲学, 语言, 大语言模型, AGI, 休谟]
 
 这篇文章改写自我在 2026 年 5 月 24 日整理的一份学习笔记，于 2026 年 10 月 10 日整理为公开版。文中引用块里的是我提出的问题，之后的内容是我从几个模型的回答中节选整理的段落，代表的是一次思考过程，不是定论。
 
+<figure class="fig">
+  <p class="fig-h">全文结构 · 一条问题链</p>
+  <div class="fig-grid" style="--min:200px">
+    <div class="fig-card"><small>1 · 起点</small><b>Can machines think?</b><small>图灵：思考方式不同 ≠ 没有思考</small></div>
+    <div class="fig-card"><small>2 · 大语言模型能通向 AGI 吗</small><b>两派之争</b><small>符号与认知学派：概率接龙有不可逾越的红墙；连接主义与涌现学派：量变引起质变</small></div>
+    <div class="fig-card"><small>3 · 推理模型改变了什么</small><b>仍是自回归</b><small>更强的推理表现 ≠ 拥有理解、意识、主观思考</small></div>
+    <div class="fig-card"><small>4 · 如何理解人类的语言</small><b>四层视角</b><small>标签（工具）→ 存在之家（世界）→ 名可名（边界）→ 渡河之舟（超越）</small></div>
+    <div class="fig-card"><small>5 · 从来如此，便是应该吗</small><b>休谟的 Is–Ought</b><small>事实描述推不出价值准则；与鲁迅“从来如此，便对吗？”同一逻辑</small></div>
+    <div class="fig-card is-acc"><small>6 · 休谟问题与 AGI</small><b>大模型是一个“Is”系统</b><small>能否通向 AGI，取决于 AGI 是否需要真正的“应当”</small></div>
+  </div>
+  <figcaption>从图灵的问题出发，经语言哲学，落到休谟问题</figcaption>
+</figure>
+
 ## 为什么想这些问题
 
 比如：
@@ -233,6 +246,21 @@ tags: [哲学, 语言, 大语言模型, AGI, 休谟]
 1. **涌现论的反驳：** 为了准确预测下一个词，模型不得不内化人类的价值观，因为这些价值观深刻地塑造了语言。当模型足够大时，“模拟价值判断”与“拥有价值判断”在功能上不可区分。但这一观点仍然难以回答：涌现出的性质是否真的具有“规范性力量”，还是仅仅是更精细的描述性表征？
 2. **强化学习与休谟：** 如果模型在与环境交互中通过奖励和惩罚学习（RLHF 已经是一种弱形式），那么奖励函数本身就引入了一个“应然”（最大化奖励）。但奖励函数依然是外部设定的，不是系统自己产生的。要产生真正自主的“应当”，系统需要自己构建规范性原则，这又回到了休谟的鸿沟。
 3. **另一种路径：** 也许 AGI 不需要人类式的道德主体性，只需要在工具理性意义上追求给定目标。这时的“应当”是工具性的：“如果你想要目标 G，那么你应当做 X”。这种“应当”可以从因果事实加目标推导出来，休谟也承认从事实加目标可以推出假言命令。所以，如果 AGI 被定义为能够高效执行任意给定目标的系统，大模型路径是有可能的。
+
+<figure class="fig">
+  <div class="fig-grid" style="--min:180px">
+    <div class="fig-card"><small>Is · 实然</small><b>事实、现状、数据</b></div>
+    <div class="fig-card is-acc"><small>大语言模型</small><b>关于应然的实然数据库</b><small>能复述“应当”，但不知道“应当”为何物</small></div>
+    <div class="fig-card"><small>Ought · 应然</small><b>价值判断、目的、取舍</b><small>休谟：仅凭事实描述，逻辑上推不出</small></div>
+  </div>
+  <div class="fig-grid" style="--min:200px">
+    <div class="fig-card"><small>行为主义的 AGI</small><b>不构成障碍</b><small>只要求行为上无差别地完成人类任务，大模型已在快速前进</small></div>
+    <div class="fig-card"><small>内在主义 / 强 AI</small><b>构成根本性障碍</b><small>要求内在的价值判断，统计语言建模在原则上无法实现</small></div>
+    <div class="fig-card"><small>工具理性的路径</small><b>假言命令可推</b><small>“想要目标 G，就应当做 X”，可由事实加目标推出</small></div>
+  </div>
+  <p class="fig-note">足够好的模仿就是智能，还是没有内在价值就没有真正的智能？</p>
+  <figcaption>休谟问题作为“大模型能否通向 AGI”的筛选器</figcaption>
+</figure>
 
 ### 小结
 

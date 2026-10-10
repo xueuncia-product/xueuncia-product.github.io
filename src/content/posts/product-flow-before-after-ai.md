@@ -19,6 +19,23 @@ tags: [产品流程, AI协作, 需求管理]
 3. **沟通载体从两件变成三件。**以前是线框稿加 PRD，现在是产品实施路线图主文档、高保真交互稿、每页的待确认事项清单，三件始终同步。
 4. **会议从消耗变成输入。**录制转逐字稿、自动生成纪要和待办、改动点回写主文档，形成闭环，而不是散在聊天记录里。
 
+<figure class="fig">
+  <p class="fig-h">阶段：<span data-p="1" style="color:var(--c)">■</span> 前置 · 想清楚做什么　<span data-p="2" style="color:var(--c)">■</span> 共创 · 定方向与形态　<span data-p="3" style="color:var(--c)">■</span> 定稿 · 变成可开发的东西　<span data-p="4" style="color:var(--c)">■</span> 收口 · 验收交付复盘</p>
+  <p><b>使用 AI 前</b> <small style="display:inline">8 步 · 线性交付</small></p>
+  <div class="fig-grid" style="--min:72px;font-size:13px;gap:6px"><span class="fig-card" data-p="2"><small>01</small>听业务口头讲需求</span><span class="fig-card" data-p="3"><small>02</small>手画低保真线框稿</span><span class="fig-card" data-p="2"><small>03</small>拿线框稿口头确认</span><span class="fig-card" data-p="3"><small>04</small>手写 PRD</span><span class="fig-card" data-p="3"><small>05</small>需求评审</span><span class="fig-card" data-p="4"><small>06</small>人工验收</span><span class="fig-card" data-p="4"><small>07</small>手写培训文档</span><span class="fig-card" data-p="4"><small>08</small>手工取数复盘</span></div>
+  <div class="fig-bar"><i data-p="2" style="--v:13">13</i><i data-p="3" style="--v:77">77</i><i data-p="4" style="--v:10">10</i><i style="--v:80"></i></div>
+  <p><b>使用 AI 后</b> <small style="display:inline">14 步 · 循环共创</small></p>
+  <div class="fig-grid" style="--min:72px;font-size:13px;gap:6px"><span class="fig-card" data-p="1"><small>01</small>规则设计与构建</span><span class="fig-card" data-p="1"><small>02</small>数据模拟测算</span><span class="fig-card" data-p="1"><small>03</small>与 AI 对抗发散</span><span class="fig-card" data-p="2"><small>04</small>对齐业务策略方向</span><span class="fig-card" data-p="2"><small>05</small>多版视觉稿选型</span><span class="fig-card" data-p="2"><small>06</small>问卷收集反馈</span><span class="fig-card" data-p="2"><small>07</small>路线图主文档</span><span class="fig-card" data-p="2"><small>08</small>会议录制转纪要</span><span class="fig-card" data-p="3"><small>09</small>高保真交互稿</span><span class="fig-card" data-p="3"><small>10</small>AI 生成 PRD</span><span class="fig-card" data-p="3"><small>11</small>产研评审</span><span class="fig-card" data-p="4"><small>12</small>用例验收</span><span class="fig-card" data-p="4"><small>13</small>预发截图转培训</span><span class="fig-card" data-p="4"><small>14</small>埋点取数复盘</span></div>
+  <div class="fig-bar"><i data-p="1" style="--v:63">63</i><i data-p="2" style="--v:49">49</i><i data-p="3" style="--v:54">54</i><i data-p="4" style="--v:14">14</i></div>
+  <div class="fig-grid" style="--min:180px">
+    <div class="fig-card"><span class="fig-num">0 → 63</span><small>前置思考：以前根本没有这一段，现在是最大的一块</small></div>
+    <div class="fig-card"><span class="fig-num">70% → 25%</span><small>原型加 PRD 的占比：绝对时长只从 70 降到 45，降幅 36%</small></div>
+    <div class="fig-card"><span class="fig-num">100 → 180</span><small>总投入：多出来的 80 全花在以前不存在的环节上</small></div>
+  </div>
+  <p class="fig-note">步骤从 8 步变成 14 步，多出来的 6 步全在最前面</p>
+  <figcaption>色条按时间占比等比缩放，AI 前总投入记为 100（估算）</figcaption>
+</figure>
+
 ## 时间怎么分配的
 
 | 阶段 | AI 前 | AI 后 | 绝对投入 | 这一行怎么读 |
@@ -51,6 +68,13 @@ tags: [产品流程, AI协作, 需求管理]
 ## 各环节对比
 
 每个环节我都按三件事记：AI 带来了什么改变，我怎么用 AI，以及这个用法是怎么一步步长出来的。
+
+<figure class="fig">
+  <div class="fig-rows"><span class="is-head">环节</span><span class="is-head">以前我怎么做</span><span class="is-head">现在 AI 做什么</span><span class="is-head">现在我做什么</span><b>需求源头</b><span data-k="以前我怎么做">接业务或运营的口头描述，多数没有书面材料</span><span data-k="现在 AI 做什么">陪我做规则构建，把规则放到真实数据上跑模拟测算</span><span data-k="现在我做什么">定义问题、划边界，在几组测算结果之间做取舍</span><b>方案发散</b><span data-k="以前我怎么做">基本没有发散，想到一版就是一版</span><span data-k="现在 AI 做什么">当对手盘跟我对抗讨论，逼出几条不同的备选路径</span><span data-k="现在我做什么">证伪自己的假设，判断哪条路径真的成立</span><b>视觉与形态</b><span data-k="以前我怎么做">手画一版低保真线框稿，好不好看看运气</span><span data-k="现在 AI 做什么">一次出多版核心页面静态视觉稿供我挑</span><span data-k="现在我做什么">选样式、定审美基线，把品味沉淀成可复用规范</span><b>需求验证</b><span data-k="以前我怎么做">口头确认一遍，业务点头就算过</span><span data-k="现在 AI 做什么">把改动点做成问卷发出去，回收后自动汇总分析</span><span data-k="现在我做什么">设计要问什么问题，解读结论该怎么用</span><b>方案载体</b><span data-k="以前我怎么做">线框稿加 PRD 两件，信息散在两处</span><span data-k="现在 AI 做什么">维护路线图主文档、高保真交互稿、待确认清单</span><span data-k="现在我做什么">定信息架构，保证三份东西的口径始终一致</span><b>会议与共识</b><span data-k="以前我怎么做">边开会边记，记漏了只能靠回忆</span><span data-k="现在 AI 做什么">录制转逐字稿，生成纪要待办，改动点回写主文档</span><span data-k="现在我做什么">审每一条改动点，守住口径不被会议带偏</span><b>PRD 撰写</b><span data-k="以前我怎么做">对着线框稿从零手写，最花时间的一块</span><span data-k="现在 AI 做什么">按固化下来的写作技能，生成整份 PRD</span><span data-k="现在我做什么">先带 AI 改一版，把我的习惯抽成标准再交给它</span><b>验收与复盘</b><span data-k="以前我怎么做">人工点一遍，培训文档和取数都手工做</span><span data-k="现在 AI 做什么">跑测试用例、预发截图生成培训文档、取数成技能</span><span data-k="现在我做什么">定验收标准、看数据结论，决定下一版改什么</span></div>
+  <div class="fig-grid" style="--min:220px"><div class="fig-card"><small>以前</small>接需求、画原型、写文档、交付，每个环节都是我在输出成品，做完人没有变化</div><div class="fig-card is-acc"><small>现在</small>设想 · 发散 · 判断 · 定义标准 · 提升品味，执行交给 AI</div></div>
+  <p class="fig-note">省下来的不是工时，是我在流程里的位置</p>
+  <figcaption>8 个关键环节：AI 接走了什么，留给我什么</figcaption>
+</figure>
 
 ### 需求源头
 
@@ -104,6 +128,19 @@ tags: [产品流程, AI协作, 需求管理]
 
 前面写的是对外交付链路：需求、方案、PRD、验收，每一步都有交给别人的产物。还有一条轴，是为了跑通那条链路自己顺手造的工具：脚本、截图、质检、改名、回写。它们不出现在任何交付物清单上，所以复盘的时候会被整体跳过。
 
+<figure class="fig">
+  <p class="fig-h">一个中型需求项目 · 工具链全景 · 7 周本地留痕</p>
+  <div class="fig-grid" style="--min:96px;text-align:center"><div class="fig-card"><span class="fig-num">7 周</span><small>需求周期</small></div><div class="fig-card"><span class="fig-num">14</span><small>项目目录</small></div><div class="fig-card"><span class="fig-num">22</span><small>数据分析产物</small></div><div class="fig-card"><span class="fig-num">15</span><small>可点交互稿</small></div><div class="fig-card"><span class="fig-num">50+</span><small>一次性脚本</small></div><div class="fig-card"><span class="fig-num">10+</span><small>画板</small></div></div>
+  <div class="fig-grid" style="--min:240px">
+    <div class="fig-card"><b>看得见的一半 · 对外交付链路</b><small>每一步都有一件交给别人的产物，复盘时一定被写进去</small><ul><li><b>需求源头</b>：规则模型与全量测算</li><li><b>方案发散</b>：对抗后的收口方案</li><li><b>视觉与形态</b>：多版静态视觉稿</li><li><b>需求验证</b>：问卷样本与汇总分析</li><li><b>方案载体</b>：主文档 + 交互稿 + 待确认清单</li><li><b>会议与共识</b>：逐字稿、纪要与待办</li><li><b>PRD 撰写</b>：整份 PRD</li><li><b>验收与复盘</b>：验收结论与培训文档</li></ul></div>
+    <div class="fig-card is-acc"><b>看不见的一半 · 为跑通它自己造的工具</b><small>不出现在任何交付物清单上，复盘时会被整体跳过</small><ul><li><b>批量改写</b>：一次改几十处就写脚本跑，一次改了 33 处规划文档</li><li><b>自动生成</b>：PRD 表格、验收清单从结构化数据直接生成</li><li><b>批量截图</b>：Playwright 跑高保真稿批量出图，直接进 PRD</li><li><b>渲染质检</b>：自动检查文字折行与页面加载失败</li><li><b>全局改名</b>：术语定案后扫描全部稿件批量替换</li><li><b>问卷自动化</b>：表单预演脚本 + 两页规则介绍页</li><li><b>知识库建设</b>：扫描分类 167 篇文档，建独立空间并修列宽</li><li><b>内容反膨胀</b>：解读文档减 17.8%，结构层贡献接近九成</li><li><b>跨工具并行</b>：同一批交互稿由两个 AI 工具各跑一版再比</li><li><b>其他形态</b>：思维导图、操作录屏、组件库重制、会议纪要卡片</li></ul></div>
+  </div>
+  <p class="fig-h">数据呈现的六种形态 · 一条链在这一个需求里走完</p>
+  <div class="fig-flow"><span class="fig-card">静态介绍页</span><span class="fig-card">HTML 分析报告</span><span class="fig-card">双受众版本</span><span class="fig-card">分层拆开的报告</span><span class="fig-card">可调参数沙盘</span><span class="fig-card is-acc">可点交互稿</span></div>
+  <p class="fig-note">反复重做的次数，就是生产成本下降真正换来的东西</p>
+  <figcaption>交付链路之外，还有一条给自己用的工具轴</figcaption>
+</figure>
+
 这个需求前后 7 周，只按本地目录扫描（不含线上的文档和画板，所以是下限）：
 
 | 维度 | 数量 |
@@ -140,3 +177,13 @@ tags: [产品流程, AI协作, 需求管理]
 ## 最大的变化不是省时间
 
 以前每个环节我都在输出成品，做完人没变化。现在我在设想、发散、判断、定标准，执行交给 AI。
+
+<figure class="fig">
+  <div class="fig-grid" style="--min:240px">
+    <div class="fig-card"><b>使用 AI 前 · 交付链</b><ol><li>接收需求：业务通过口头或书面描述需求</li><li>制作形态：画低保真线框稿，再口头确认</li><li>沉淀与评审：手写 PRD，进入需求评审</li><li>验收与收口：人工验收、写培训文档、手工复盘</li></ol><small>我的角色：持续输出线框稿、PRD、纪要和交付材料</small></div>
+    <div class="fig-card is-acc"><b>使用 AI 后 · 推理与反馈链</b><ol><li>定义问题：规则构建、数据模拟、与 AI 对抗发散</li><li>共创与验证：业务策略、多版视觉、问卷反馈与 AI 汇总</li><li>形成共同载体：主规划文档、高保真稿、待确认事项清单</li><li>让会议进入闭环：逐字稿、纪要、待办、改动点回写主文档</li><li>标准化交付与复盘：PRD 技能、AI 验收、培训文档、数据分析</li></ol><small>我的角色：设想、发散、总结、判断、定义标准、提升品味</small></div>
+  </div>
+  <p class="fig-note">原型稿 + PRD 的时间占比：约 70% → 约 25%；时间被重新投向前置思考与验证</p>
+  <figcaption>不是把旧流程单纯加速，而是把重心从“产出文档”前移到“定义问题、验证方案、持续回写”</figcaption>
+</figure>
+
