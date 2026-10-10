@@ -1,5 +1,10 @@
 ---
 import page from '../../public/vault/index.html?raw';
-const html = page.replace('href="./gate.css"', 'href="/vault/gate.css"').replace('src="./gate.js"', 'src="/vault/gate.js"');
+import script from '../../public/vault/gate.js?raw';
+import styles from '../../public/vault/gate.css?raw';
+import { createHash } from 'node:crypto';
+const scriptVersion = createHash('sha256').update(script).digest('hex').slice(0, 12);
+const styleVersion = createHash('sha256').update(styles).digest('hex').slice(0, 12);
+const html = page.replace('href="./gate.css"', `href="/vault/gate.css?v=${styleVersion}"`).replace('src="./gate.js"', `src="/vault/gate.js?v=${scriptVersion}"`);
 ---
 <Fragment set:html={html} />

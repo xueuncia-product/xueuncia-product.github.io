@@ -19,13 +19,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       (() => {
         let theme;
         try { theme = localStorage.getItem('theme'); } catch {}
-        theme = new URLSearchParams(location.search).get('theme') || theme;
-        theme = theme === 'cosmos' ? 'cosmos' : 'sky';
+        const themes = ['sky', 'cosmos', 'ink'], queryTheme = new URLSearchParams(location.search).get('theme');
+        if (themes.includes(queryTheme)) theme = queryTheme;
+        if (!themes.includes(theme)) theme = 'sky';
+        try { localStorage.setItem('theme', theme); } catch {}
         const paint = () => {
           const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
           const hour = now.getHours() + now.getMinutes() / 60;
-          document.documentElement.classList.toggle('night', theme === 'cosmos' || hour < 5.5 || hour >= 19.5);
+          document.documentElement.classList.toggle('night', theme === 'cosmos' || (theme === 'sky' && (hour < 5.5 || hour >= 19.5)));
           document.documentElement.classList.toggle('cosmos', theme === 'cosmos');
+          document.documentElement.classList.toggle('ink', theme === 'ink');
           document.querySelectorAll('[data-theme-choice]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme)));
         };
         paint(); setInterval(paint, 60000);
@@ -49,7 +52,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         ))}
         <li><a href={`${base}/contact/`} aria-current={active === 'contact' ? 'page' : undefined}>联系</a></li>
       </ul></nav>
-      <div class="theme-switch" aria-label="页面主题"><button type="button" data-theme-choice="sky" aria-pressed="true">☁ 云端</button><button type="button" data-theme-choice="cosmos" aria-pressed="false">☯ 太极</button></div>
+      <div class="theme-switch" aria-label="页面主题"><button type="button" data-theme-choice="sky" aria-pressed="true">☁ 云端</button><button type="button" data-theme-choice="cosmos" aria-pressed="false">☯ 太极</button><button type="button" data-theme-choice="ink" aria-pressed="false">水墨</button></div>
     </header>
     <main class="wrap"><slot /></main>
     <footer class="wrap footer">

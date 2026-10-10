@@ -13,6 +13,7 @@
     --w: 100vw; --x: 0px; --y: 0px; --H: calc(var(--w) * .46);
   }
   body.night, body.cosmos { --paper: #0d1220; --ink: #e8ebf2; --mute: #8d95a8; --line: #222a3d; --blue: #8fb4ff; --chip: #151c2e; }
+  body.ink { --paper: #f4efe4; --ink: #282721; --mute: #756f60; --line: #d9d1c3; --blue: #ac493b; --chip: #fbf7ef; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); transition: background .6s, color .6s; }
   a { color: inherit; text-decoration: none; }
@@ -77,6 +78,22 @@
   body.cosmos .rig img { filter: brightness(.72) saturate(.8) drop-shadow(0 8px 8px rgba(2,8,20,.4)); }
   .leo-c::before { z-index: 0; background: rgba(2,8,20,.6); filter: blur(6px); }
   .leo-c .rig { z-index: 1; }
+  .inkl { display: none; position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 1.8s; }
+  .ink-landscape { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+  .ink-leopard { position: absolute; z-index: 1; width: 27%; left: 69%; bottom: 5%; }
+  .ink-leopard::before { content: ''; position: absolute; left: 24%; bottom: 3.5%; width: 62%; height: 4%; border-radius: 50%; background: #28272122; filter: blur(4px); }
+  .ink-leopard img { display: block; position: relative; width: 100%; transform-origin: 50% 94.5%; animation: ink-breathe 8s ease-in-out infinite; }
+  @keyframes ink-breathe { 50% { transform: scale(1.003, 1.005); } }
+  body.ink .skyl, body.ink .cosmosl, body.ink #sky, body.ink #stars { opacity: 0; visibility: hidden; pointer-events: none; }
+  body.ink .inkl { display: block; opacity: 1; visibility: visible; }
+  body.ink .seg { background: #fbf7efed; border-color: var(--line); }
+  body.ink .seg button, body.ink nav .links, body.ink .intro .role { color: var(--ink); }
+  body.ink .seg button.on { background: var(--blue); color: var(--paper); }
+  body.ink .btn.dark { background: var(--ink); color: var(--paper); }
+  body.ink .btn.ghost { background: #fbf7ef99; border-color: var(--line); color: var(--ink); }
+  body.ink .art.g, body.ink .art.b { background: radial-gradient(120% 90% at 70% 0%, #596055, #222820 70%); }
+  body.ink .art svg { opacity: .35; }
+  body.ink .float span { background: transparent url(/ink/leopard.png) 50% 20% / 190% no-repeat; }
   .seg { display: flex; background: rgba(255,255,255,.92); border: 1px solid rgba(0,0,0,.06); border-radius: 99px; padding: 3px; box-shadow: 0 2px 10px rgba(30,60,110,.08); }
   .seg button { border: 0; background: none; border-radius: 99px; padding: 5px 12px; font: 14px var(--serif); color: #38404e; cursor: pointer; }
   .seg button.on { background: #1f2229; color: #fff; }
@@ -145,10 +162,14 @@
     .orb { margin-top: 150px; }
     .intro { margin: 0 20px; top: 92px; } .intro .role { font-size: 17px; }
     .wrap { grid-template-columns: 1fr; margin: 0 20px; gap: 48px; } .cards { grid-template-columns: 1fr; }
+    .ink-landscape { width: 180%; left: -80%; object-position: right bottom; }
+    .ink-leopard { width: 52%; left: 45%; bottom: 7%; }
   }
   @media (prefers-reduced-motion: reduce) {
     .leo, .leo-c, .drift-a, .drift-b, .halo { animation: none !important; }
     .rig img, body, #sky, #stars, .skyl, .cosmosl { transition: none; }
+    body.ink *, body.ink *::before, body.ink *::after { animation: none !important; transition: none !important; }
+    body.ink .card:hover, body.ink .btn:hover { transform: none; }
   }
 </style>
 </head>
@@ -175,12 +196,13 @@
     <img class="ridge" src="ridge.webp" alt="" />
     <div class="leo-c actor" id="leoC"><div class="rig"><img class="on" src="leo_sit.webp" alt="仰望星空太极的小雪豹" /><img alt="" /></div></div>
   </div>
+  <div class="inkl"><img class="ink-landscape" src="/ink/landscape.png" alt="" loading="lazy" decoding="async" /><div class="ink-leopard"><img src="/ink/leopard.png" alt="坐在水墨山水岸边的小雪豹" loading="lazy" decoding="async" /></div></div>
   <div class="fade"></div>
 
   <nav>
     <a class="logo" href="/">Uncia<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 9 C 60 2, 120 14, 198 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
     <div class="links"><a href="/ai-learning/">AI 学习</a><a href="/philosophy/">哲学</a><a href="/methods/">工作方法论</a><a href="/works/">作品展示</a></div>
-    <div class="seg" id="seg"><button data-th="sky" title="云端 · 跟着北京时间">☁ 云端</button><button data-th="cosmos" title="星空太极">☯ 太极</button></div>
+    <div class="seg" id="seg"><button type="button" data-th="sky" aria-pressed="true" title="云端 · 跟着北京时间">☁ 云端</button><button type="button" data-th="cosmos" aria-pressed="false" title="星空太极">☯ 太极</button><button type="button" data-th="ink" aria-pressed="false" title="水墨山水">水墨</button></div>
   </nav>
 
   <div class="intro">
@@ -240,9 +262,10 @@
   function paint() {
     const h = hour, night = h < 5.5 || h >= 19.5;
     const ph = night ? 'night' : h < 8 ? 'dawn' : h < 16.5 ? 'day' : 'dusk';
-    document.body.classList.toggle('night', night || theme === 'cosmos');
+    document.body.classList.toggle('night', theme === 'cosmos' || (theme === 'sky' && night));
     document.body.classList.toggle('cosmos', theme === 'cosmos');
-    document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.th === theme));
+    document.body.classList.toggle('ink', theme === 'ink');
+    document.querySelectorAll('#seg button').forEach(b => { b.classList.toggle('on', b.dataset.th === theme); b.setAttribute('aria-pressed', String(b.dataset.th === theme)); });
     sky.style.background = `linear-gradient(${SKY[ph][0]}, ${SKY[ph][1]} 75%)`;
     const t = night ? (((h + 24 - 19.5) % 24) / 10) : (h - 5.5) / 14;
     orb.className = 'orb ' + (night ? 'moon' : 'sun');
@@ -253,12 +276,13 @@
   }
   let theme = 'sky';
   try { theme = localStorage.getItem('theme') || theme; } catch {}
-  theme = new URLSearchParams(location.search).get('theme') || theme;
-  theme = theme === 'cosmos' ? 'cosmos' : 'sky';
+  const themes = ['sky', 'cosmos', 'ink'], queryTheme = new URLSearchParams(location.search).get('theme');
+  if (themes.includes(queryTheme)) theme = queryTheme;
+  if (!themes.includes(theme)) theme = 'sky';
   try { localStorage.setItem('theme', theme); } catch {}
   paint();
   setInterval(() => { if (q === null) { hour = bj(); paint(); } }, 60000);
-  document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { theme = b.dataset.th; try { localStorage.setItem('theme', theme); } catch {} paint(); });
+  document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { theme = b.dataset.th; try { localStorage.setItem('theme', theme); } catch {} paint(); syncActorScene(); });
 
   // ---- 星星 ----
   const cv = document.getElementById('stars'), cx = cv.getContext('2d');
@@ -288,9 +312,10 @@
   const images = new Map(SEQUENCE.map(name => { const image = new Image(); image.src = name + '.webp'; return [name, image]; }));
   const leo = document.getElementById('leo'), leoC = document.getElementById('leoC');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const activeScene = () => document.body.classList.contains('cosmos') ? 'cosmos' : (hour < 5.5 || hour >= 19.5) ? 'night' : 'day';
+  const activeScene = () => theme === 'ink' ? 'ink' : theme === 'cosmos' ? 'cosmos' : (hour < 5.5 || hour >= 19.5) ? 'night' : 'day';
   let scene = activeScene(), poseIndex = 0, timer, transition = 0;
   async function showPose(name) {
+    if (scene === 'ink') return;
     const version = ++transition, el = scene === 'cosmos' ? leoC : leo;
     const image = images.get(name);
     try { await image.decode(); } catch { return; }
@@ -303,17 +328,19 @@
   }
   function nextPose(index) {
     clearTimeout(timer); poseIndex = index;
+    if (scene === 'ink') { transition++; return; }
     showPose(SEQUENCE[index]);
     if (!reducedMotion.matches) timer = setTimeout(() => nextPose((index + 1) % SEQUENCE.length), DWELL[SEQUENCE[index]]);
   }
   nextPose(0);
-  setInterval(() => { const next = activeScene(); if (next !== scene) { scene = next; nextPose(0); } }, 1000);
+  function syncActorScene() { const next = activeScene(); if (next !== scene) { scene = next; nextPose(0); } }
+  setInterval(syncActorScene, 1000);
   [leo, leoC].forEach(el => el.onclick = () => { if (!reducedMotion.matches && poseIndex !== 1) nextPose(1); });
   reducedMotion.addEventListener('change', () => nextPose(0));
 
   // ---- 鼠标视差 ----
   const layers = [...document.querySelectorAll('[data-p]')];
-  addEventListener('mousemove', e => { const mx = e.clientX / innerWidth - .5, my = e.clientY / innerHeight - .5;
+  addEventListener('mousemove', e => { if (reducedMotion.matches || theme === 'ink') return; const mx = e.clientX / innerWidth - .5, my = e.clientY / innerHeight - .5;
     layers.forEach(l => { const p = +l.dataset.p, flip = l.classList.contains('far') ? ' scaleX(-1)' : '';
       l.style.transform = `translate(${-mx * p}px, ${-my * p * .4}px)` + flip; }); });
 

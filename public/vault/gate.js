@@ -3,32 +3,80 @@ const $ = (selector) => document.querySelector(selector);
 const login = $('.vault-login'), library = $('.vault-library'), reader = $('.vault-reader');
 const password = $('#vault-password'), status = $('.vault-status'), submit = $('[type=submit]');
 const list = $('.vault-list'), search = $('[type=search]'), year = $('#vault-year'), more = $('.vault-more');
-const categories = $('.vault-categories'), lock = $('.vault-lock'), frame = $('iframe');
+const categories = $('.vault-categories'), lock = $('.vault-lock'), prose = $('.vault-prose');
 let key = null, archive = null, generation = 0, reading = 0, limit = 80;
-let scope = 'featured', category = '', articleHTML = null, returnFocus = null, returnScroll = 0;
+let scope = 'featured', category = '', returnFocus = null, returnScroll = 0;
 let requests = new AbortController();
 let theme;
 try { theme = localStorage.getItem('theme'); } catch { /* Browser storage can be unavailable. */ }
-theme = theme === 'cosmos' ? 'cosmos' : 'sky';
+const requestedTheme = new URLSearchParams(location.search).get('theme');
+const themes = ['sky', 'cosmos', 'ink'];
+if (themes.includes(requestedTheme)) theme = requestedTheme;
+if (!themes.includes(theme)) theme = 'sky';
+try { localStorage.setItem('theme', theme); } catch { /* The selected theme still works for this page. */ }
 
-function articleDocument(html) {
-  const dark = document.body.classList.contains('night');
-  const colors = dark ? ['#0d1220', '#e8ebf2', '#a2adc2', '#8fb4ff', '#29364f', '#151c2e'] : ['#fdfbf6', '#252933', '#6b6f78', '#1d4ea0', '#ded8cc', '#f1ede5'];
-  const [paper, ink, mute, blue, line, chip] = colors;
-  return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><style>
-    :root{color-scheme:${dark ? 'dark' : 'light'}}*{box-sizing:border-box}body{margin:0;padding:12px 20px 48px;background:${paper};color:${ink};font:18px/1.95 'Songti SC','Noto Serif CJK SC',SimSun,serif;letter-spacing:.025em;overflow-wrap:anywhere}p{margin:0 0 1.35em}h1,h2,h3,h4{line-height:1.5;letter-spacing:0;margin:1.7em 0 .75em}h1{font-size:1.7em}h2{font-size:1.4em}h3{font-size:1.2em}img{display:block;max-width:100%;height:auto;margin:24px auto;border-radius:8px}a{color:${blue};text-underline-offset:3px}ul,ol{padding-left:1.5em;margin:0 0 1.35em}li{margin:.4em 0}pre{white-space:pre-wrap;padding:16px;background:${chip};border-radius:8px}code{font-family:ui-monospace,monospace;font-size:.85em}blockquote{border-left:3px solid ${line};padding:4px 0 4px 20px;margin:24px 0;color:${mute}}blockquote p:last-child{margin-bottom:0}hr{border:0;border-top:1px solid ${line};margin:32px 0}table{border-collapse:collapse;display:block;overflow:auto;max-width:100%;font-size:.9em}th,td{padding:8px;border:1px solid ${line}}@media(max-width:600px){body{padding:8px 12px 36px;font-size:17px}}
-  </style></head><body>${html}</body></html>`;
+function safeLink(value) {
+  if (typeof value !== 'string' || /[\u0000-\u0020\u007f]/.test(value)) return false;
+  if (/^#[\w:.-]*$/.test(value)) return true;
+  if (!/^(?:https?:\/\/|mailto:)/i.test(value)) return false;
+  try { return ['https:', 'http:', 'mailto:'].includes(new URL(value).protocol); } catch { return false; }
+}
+function safeImage(value) {
+  const match = /^data:image\/(jpeg|png|gif|webp);base64,([A-Za-z0-9+/]+={0,2})$/i.exec(value || '');
+  if (!match) return null;
+  try {
+    const bytes = atob(match[2]);
+    if (bytes.length < 12) return null;
+    // Some archived .jpg files contain GIF bytes; trust the raster signature, not the old extension.
+    const type = bytes.startsWith('\xff\xd8\xff') ? 'jpeg'
+      : bytes.startsWith('\x89PNG\r\n\x1a\n') ? 'png'
+      : /^(?:GIF87a|GIF89a)/.test(bytes) ? 'gif'
+      : bytes.startsWith('RIFF') && bytes.slice(8, 12) === 'WEBP' ? 'webp' : null;
+    return type ? `data:image/${type};base64,${match[2]}` : null;
+  } catch { return null; }
+}
+function missingImage(alt) {
+  return document.createTextNode(alt ? `${alt}（图片暂未保留）` : '图片暂未保留');
+}
+function sanitizeArticle(html) {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  const allowed = new Set('p br hr h1 h2 h3 h4 h5 h6 strong em b i u s del code pre blockquote ul ol li dl dt dd table thead tbody tfoot tr th td caption a img span div sup sub'.split(' '));
+  const blocked = new Set('script style iframe frame frameset svg math form input button select textarea option object embed applet link meta base audio video source canvas template noscript'.split(' '));
+  const copy = (node) => {
+    if (node.nodeType === Node.TEXT_NODE) return document.createTextNode(node.textContent);
+    if (node.nodeType !== Node.ELEMENT_NODE || blocked.has(node.localName)) return document.createDocumentFragment();
+    const tag = node.localName;
+    const imageSource = tag === 'img' ? safeImage(node.getAttribute('src')) : null;
+    if (tag === 'img' && !imageSource) return missingImage(node.getAttribute('alt'));
+    const element = allowed.has(tag) ? document.createElement(tag) : document.createDocumentFragment();
+    if (tag === 'a' && safeLink(node.getAttribute('href'))) {
+      element.setAttribute('href', node.getAttribute('href'));
+      element.setAttribute('rel', 'noopener noreferrer');
+      if (!node.getAttribute('href').startsWith('#')) element.setAttribute('target', '_blank');
+    }
+    if (tag === 'img') {
+      element.setAttribute('src', imageSource);
+      element.setAttribute('alt', node.getAttribute('alt') || '');
+      element.setAttribute('loading', 'lazy'); element.setAttribute('decoding', 'async');
+      element.addEventListener('error', () => element.replaceWith(missingImage(element.alt)), { once: true });
+    }
+    if (allowed.has(tag) && node.hasAttribute('title')) element.setAttribute('title', node.getAttribute('title'));
+    for (const child of node.childNodes) element.append(copy(child));
+    return element;
+  };
+  const fragment = document.createDocumentFragment();
+  for (const child of template.content.childNodes) fragment.append(copy(child));
+  return fragment;
 }
 
 function paintTheme() {
   const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' })), hour = now.getHours() + now.getMinutes() / 60;
-  const dark = theme === 'cosmos' || hour < 5.5 || hour >= 19.5;
-  const changed = document.body.classList.contains('night') !== dark;
+  const dark = theme === 'cosmos' || (theme === 'sky' && (hour < 5.5 || hour >= 19.5));
   document.body.classList.toggle('night', dark);
   document.body.classList.toggle('cosmos', theme === 'cosmos');
+  document.body.classList.toggle('ink', theme === 'ink');
   document.querySelectorAll('[data-theme]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.theme === theme)));
-  // shortcut: a theme change resets sandbox scroll; add a safe scroll bridge only if reading-position persistence is needed.
-  if (changed && articleHTML !== null) frame.srcdoc = articleDocument(articleHTML);
 }
 paintTheme();
 setInterval(paintTheme, 60000);
@@ -39,12 +87,13 @@ document.querySelectorAll('[data-theme]').forEach((button) => button.addEventLis
 }));
 
 function clearReader() {
-  articleHTML = null; frame.removeAttribute('srcdoc');
+  prose.replaceChildren();
   $('.vault-reader h2').textContent = ''; $('.vault-meta').textContent = '';
 }
 function reset() {
   generation++; reading++; requests.abort(); requests = new AbortController();
-  key = null; archive = null; returnFocus = null;
+  key = null; archive = null; returnFocus = null; returnScroll = 0;
+  document.body.classList.remove('reading');
   login.reset(); login.hidden = false; library.hidden = true; reader.hidden = true; lock.hidden = true;
   status.textContent = ''; submit.disabled = false; submit.textContent = '解锁';
   list.replaceChildren(); categories.replaceChildren(); search.value = '';
@@ -153,12 +202,14 @@ year.addEventListener('change', () => { limit = 80; renderList(); });
 more.addEventListener('click', () => { limit += 80; renderList(); });
 $('.vault-back').addEventListener('click', () => {
   reading++; reader.hidden = true; library.hidden = false; clearReader();
+  document.body.classList.remove('reading');
   returnFocus?.focus({ preventScroll: true }); window.scrollTo({ top: returnScroll });
 });
 async function openPost(post, button) {
   const session = generation, articleRequest = ++reading, sessionKey = key, signal = requests.signal;
   returnFocus = button; returnScroll = window.scrollY;
-  library.hidden = true; reader.hidden = false; clearReader(); window.scrollTo({ top: 0 });
+  library.hidden = true; reader.hidden = false; clearReader();
+  document.body.classList.add('reading'); window.scrollTo({ top: 0 });
   $('.vault-reader h2').textContent = post.title;
   $('.vault-meta').textContent = `${post.date} · ${post.category}${post.metadataOnly ? ' · 仅存标题与日期' : ''} · 正在读取…`;
   $('.vault-back').focus();
@@ -166,7 +217,7 @@ async function openPost(post, button) {
     const content = await decrypt(`data/posts/${post.file}`, sessionKey, signal);
     if (session !== generation || articleRequest !== reading) return;
     if (typeof content.html !== 'string') throw new Error('正文格式错误。');
-    articleHTML = content.html; frame.srcdoc = articleDocument(articleHTML);
+    prose.replaceChildren(sanitizeArticle(content.html));
     $('.vault-meta').textContent = `${post.date} · ${post.category}${post.metadataOnly ? ' · 仅存标题与日期' : ''}`;
   } catch (error) {
     if (session === generation && articleRequest === reading && error.name !== 'AbortError') $('.vault-meta').textContent = '这篇记录暂时无法读取，请返回目录后重试。';
