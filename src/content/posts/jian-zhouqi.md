@@ -1,7 +1,7 @@
 ---
 title: "人到中年，为什么更要看懂周期？"
 date: 2026-10-10
-section: philosophy
+section: works
 summary: "从人与行业、产业、历史与人生四层视角，思考中年的选择与长期积累，附3分30秒视频随笔。"
 source: original
 ---
