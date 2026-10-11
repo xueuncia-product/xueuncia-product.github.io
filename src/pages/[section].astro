@@ -15,7 +15,8 @@ const posts = (await getCollection('posts', (p) => !p.data.draft && !p.data.priv
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const cycleVideo = posts.find((p) => p.id === 'jian-zhouqi');
 const moonVideo = posts.find((p) => p.id === 'moon-ink-mv');
-const articles = s.key === 'works' ? posts.filter((p) => p !== cycleVideo && p !== moonVideo) : posts;
+const cijiuVideo = posts.find((p) => p.id === 'cijiumen-mv');
+const articles = s.key === 'works' ? posts.filter((p) => p !== cycleVideo && p !== moonVideo && p !== cijiuVideo) : posts;
 ---
 <Base title={s.name} description={s.desc} active={s.key}>
   <header class="section-heading"><small>{s.en}</small><h1 style={`--section-color: ${s.color}`}>{s.name}</h1><p>{s.desc}</p></header>
@@ -25,6 +26,7 @@ const articles = s.key === 'works' ? posts.filter((p) => p !== cycleVideo && p !
       <section id="videos" class="works-section" aria-labelledby="videos-title">
         <div class="works-heading"><small>Films &amp; video essays</small><h2 id="videos-title">视频作品</h2><p>视频随笔与旅行影像，在这里单独收藏。</p></div>
         <div class="video-works">
+          {cijiuVideo && <a class="video-work" href={`${base}/p/${cijiuVideo.id}/`}><div class="video-cover"><img src={`${base}/media/cijiumen-mv/cover-3x4.jpg`} alt="辞九门回忆交响版MV，风雪中油纸伞下相望的一对民国男女" loading="lazy" decoding="async" /><span>5 分 28 秒</span></div><div class="video-info"><span class="eyebrow">交响 · 完整 MV</span><h3>{cijiuVideo.data.title}</h3><p>民国长沙、风雪与戏台，75 个镜头随交响乐展开，一夜画完。</p><span class="text-link">播放完整 MV →</span></div></a>}
           {moonVideo && <a class="video-work" href={`${base}/p/${moonVideo.id}/`}><div class="video-cover"><img src={`${base}/media/moon-ink-mv/cover-3x4.jpg`} alt="八千里路明月照水墨书法MV，红白宣纸、明月与提灯孤舟封面" loading="lazy" decoding="async" /><span>2 分 54 秒</span></div><div class="video-info"><span class="eyebrow">水墨书法 · 完整 MV</span><h3>{moonVideo.data.title}</h3><p>寒窗、风雪、月下孤舟与云海孤鸿，随泽国同学的歌声展开。</p><span class="text-link">播放完整 MV →</span></div></a>}
           {cycleVideo && <a class="video-work" href={`${base}/p/${cycleVideo.id}/`}><div class="video-cover"><img src={`${base}/media/jian-zhouqi/cover-9x16.jpg`} alt="见周期视频随笔的水墨年轮封面" loading="lazy" decoding="async" /><span>3 分 30 秒</span></div><div class="video-info"><span class="eyebrow">视频随笔 · 见周期</span><h3>{cycleVideo.data.title}</h3><p>从人与行业、产业、历史到人生，思考中年的选择与长期积累。</p><span class="text-link">看视频与随笔 →</span></div></a>}
           <a class="video-work" href={`${base}/new-zealand/#fjord-original-sound`}><div class="video-cover"><img src={`${base}/media/new-zealand/fjord-original-sound.jpg`} alt="本人拍摄的新西兰峡湾瀑布，峡湾原声视频画面" loading="lazy" decoding="async" /><span>26 秒</span></div><div class="video-info"><span class="eyebrow">旅行影像 · 本人实拍</span><h3>人生不虚此行 · 峡湾原声</h3><p>从远处岩壁到近处飞泉，留下瀑布、风与现场的声音。</p><span class="text-link">看原声短片 →</span></div></a>
